@@ -1,2 +1,2 @@
 # website
-Arqus' wesite.
+Arqus' website.
