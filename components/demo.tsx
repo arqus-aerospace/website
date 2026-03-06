@@ -14,7 +14,7 @@ const HeroDemo: React.FC = () => {
           logo: "Arqus Aerospace",
           logoSrc: "/logo/top_left_logo_and_comapny_name.png",
           ctaText: "We're Hiring",
-          onCtaClick: () => { window.open("mailto:marnix@arqusaerospace.com"); }
+          onCtaClick: () => { window.location.href = "mailto:marnix@arqusaerospace.com"; }
         }}
         trustBadge={{
           text: "Non-kinetic · Rapid-deployable · Air & Space Defence · Munich, Germany · Sovereign European Warfighting Domain"
@@ -26,7 +26,7 @@ const HeroDemo: React.FC = () => {
         subtitle="Critical infrastructure is moving to orbit faster than defense can follow. Arqus closes that gap."
         button={{
           text: "Request a Briefing",
-          onClick: () => { window.open("mailto:marnix@arqusaerospace.com"); }
+          onClick: () => { window.location.href = "mailto:marnix@arqusaerospace.com"; }
         }}
         secondButton={{
           text: "Request our Whitepaper",
