@@ -4,6 +4,8 @@ import { useState } from "react";
 import Hero from "@/components/ui/animated-shader-hero";
 import WhitepaperModal from "@/components/ui/whitepaper-modal";
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const HeroDemo: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -12,7 +14,7 @@ const HeroDemo: React.FC = () => {
       <Hero
         nav={{
           logo: "Arqus Aerospace",
-          logoSrc: "/logo/top_left_logo_and_comapny_name.png",
+          logoSrc: `${BASE}/logo/top_left_logo_and_comapny_name.png`,
           ctaText: "We're Hiring",
           onCtaClick: () => { window.location.href = "mailto:marnix@arqusaerospace.com"; }
         }}
@@ -36,8 +38,8 @@ const HeroDemo: React.FC = () => {
         backedBy={{
           text: "Backed by",
           logos: [
-            { src: "/logo/tum_venture_labs_logo.png", alt: "TUM Venture Labs", height: 67 },
-            { src: "/logo/esa_logo.png", alt: "ESA", height: 77 },
+            { src: `${BASE}/logo/tum_venture_labs_logo.png`, alt: "TUM Venture Labs", height: 67 },
+            { src: `${BASE}/logo/esa_logo.png`, alt: "ESA", height: 77 },
           ]
         }}
       />

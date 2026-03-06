@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useEffect } from 'react';
-import Image from 'next/image';
 
 interface HeroProps {
   nav?: {
@@ -326,7 +325,7 @@ const Hero: React.FC<HeroProps> = ({
       {nav && (
         <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-8 md:px-12 py-7 animate-fade-in delay-100">
           {nav.logoSrc ? (
-            <Image src={nav.logoSrc} alt={nav.logo} width={200} height={32} className="h-8 w-auto select-none" style={{ width: 'auto' }} />
+            <img src={nav.logoSrc} alt={nav.logo} className="h-8 w-auto select-none" />
           ) : (
             <span className="text-white/90 font-medium tracking-[0.3em] text-xs uppercase select-none">
               {nav.logo}
@@ -421,14 +420,12 @@ const Hero: React.FC<HeroProps> = ({
             <span className="text-white/45 tracking-[0.25em] uppercase" style={{ fontSize: 'clamp(11px, 1.25vw, 18px)' }}>{backedBy.text}</span>
             <div className="flex items-center gap-4">
               {backedBy.logos.map((logo, i) => (
-                <Image
+                <img
                   key={i}
                   src={logo.src}
                   alt={logo.alt}
-                  width={200}
-                  height={logo.height ?? 20}
-                  style={{ height: `clamp(${Math.round((logo.height ?? 20) * 0.33)}px, ${((logo.height ?? 20) / 1440 * 100).toFixed(2)}vw, ${logo.height ?? 20}px)`, width: 'auto', mixBlendMode: 'screen', filter: 'brightness(2)' }}
-                  className="opacity-90 select-none"
+                  style={{ height: `clamp(${Math.round((logo.height ?? 20) * 0.33)}px, ${((logo.height ?? 20) / 1440 * 100).toFixed(2)}vw, ${logo.height ?? 20}px)`, mixBlendMode: 'screen', filter: 'brightness(2)' }}
+                  className="w-auto opacity-90 select-none"
                 />
               ))}
             </div>
