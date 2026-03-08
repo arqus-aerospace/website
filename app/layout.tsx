@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Arqus Aerospace",
   description: "Arqus Aerospace Website",
   icons: {
-    icon: "/logo/icon.png",
+    icon: "/website/logo/icon.png",
   },
 };
 
