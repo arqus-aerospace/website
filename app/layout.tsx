@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import CursorGlow from "@/components/ui/cursor-glow";
 
 const SITE_URL = "https://arqusaerospace.com";
 
@@ -137,7 +138,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <CursorGlow glowRadius={70} />
+        {children}
+      </body>
     </html>
   );
 }
