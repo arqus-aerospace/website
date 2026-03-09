@@ -27,7 +27,7 @@ const HeroDemo: React.FC = () => {
           line1: "The next conflict",
           line2: "begins overhead."
         }}
-        subtitle=""
+        subtitle="Arqus delivers non-kinetic effects to disable, deceive, and deny — giving European defence forces a sovereign edge in the electromagnetic and orbital domain."
         button={{
           text: "Request a Briefing",
           onClick: () => { window.open("https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ15tGIByLIjJQvaJTQ8l5uMUn7D4lfSh2552_4GjIYMZJzJICFthQB0coAckWtaOGm48eX4OGLa", "_blank"); }
