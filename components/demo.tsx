@@ -21,13 +21,13 @@ const HeroDemo: React.FC = () => {
           onCtaClick: () => setHiringOpen(true),
         }}
         trustBadge={{
-          text: "Scalable Air and Space Defence for the Western Warfighting Domain"
+          text: "Autonomous Orbital Effectors, Powered by Edge AI"
         }}
         headline={{
-          line1: "The next conflict",
-          line2: "begins overhead."
+          line1: "Space needs",
+          line2: "to act."
         }}
-        subtitle="Arqus delivers non-kinetic effects to disable, deceive, and deny — giving European defence forces a sovereign edge in the electromagnetic and orbital domain."
+        subtitle="Arqus builds the hardware and AI that make satellites act. Our autonomous effector modules — from directed energy to robotic systems to software-defined EW — plug into any platform, giving it the ability to defend, inspect, service, and deny on its own, in real-time."
         button={{
           text: "Request a Briefing",
           onClick: () => { window.open("https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ15tGIByLIjJQvaJTQ8l5uMUn7D4lfSh2552_4GjIYMZJzJICFthQB0coAckWtaOGm48eX4OGLa", "_blank"); }

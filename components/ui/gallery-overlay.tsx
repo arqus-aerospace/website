@@ -13,10 +13,10 @@ export default function GalleryOverlay() {
         </svg>
       </a>
       <p className="font-instrument-serif font-normal text-4xl md:text-6xl lg:text-[5.5rem] leading-tight tracking-tight max-w-5xl mx-auto">
-        Critical infrastructure is moving to orbit faster than defense can follow.
+        70,000 satellites by 2030. None of them can act on their own.
       </p>
       <p className="mt-5 font-instrument-serif font-normal text-2xl md:text-3xl lg:text-4xl">
-        <span style={{ textShadow: '0 0 10px rgba(245,158,11,1), 0 0 30px rgba(245,158,11,1), 0 0 60px rgba(245,158,11,0.8), 0 0 100px rgba(245,158,11,0.6), 0 0 150px rgba(245,158,11,0.4)' }}>Arqus closes that gap.</span>
+        <span style={{ textShadow: '0 0 10px rgba(245,158,11,1), 0 0 30px rgba(245,158,11,1), 0 0 60px rgba(245,158,11,0.8), 0 0 100px rgba(245,158,11,0.6), 0 0 150px rgba(245,158,11,0.4)' }}>Arqus gives them the tools to defend, inspect, and operate autonomously.</span>
       </p>
     </div>
   );
