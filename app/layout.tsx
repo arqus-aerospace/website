@@ -6,24 +6,24 @@ const SITE_URL = "https://arqusaerospace.com";
 
 export const metadata: Metadata = {
   title: {
-    default: "Arqus Aerospace | Space Technology & Innovation",
+    default: "Arqus Aerospace | Defence Hardware for Orbit",
     template: "%s | Arqus Aerospace",
   },
   description:
-    "Arqus Aerospace develops cutting-edge space technology solutions including orbital datacenters, commercial space stations, reusable launch systems, and satellite broadband constellations.",
+    "Arqus Aerospace develops sovereign hardware for space and defence — physical AI systems that protect the next domain of trade, security, and deterrence.",
   metadataBase: new URL(SITE_URL),
   alternates: {
     canonical: "/",
   },
   keywords: [
+    "space defence",
+    "orbital security",
+    "deterrence",
+    "physical AI",
+    "sovereign hardware",
+    "space domain awareness",
+    "allied defence",
     "aerospace",
-    "space technology",
-    "orbital datacenters",
-    "commercial space stations",
-    "reusable launch systems",
-    "satellite broadband",
-    "on-orbit servicing",
-    "space defense",
     "Arqus Aerospace",
   ],
   authors: [{ name: "Arqus Aerospace" }],
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     siteName: "Arqus Aerospace",
-    title: "Arqus Aerospace | Space Technology & Innovation",
+    title: "Arqus Aerospace | Defence Hardware for Orbit",
     description:
-      "Developing cutting-edge space technology solutions including orbital datacenters, commercial space stations, reusable launch systems, and satellite broadband constellations.",
+      "Sovereign hardware for space and defence — physical AI systems that protect the next domain of trade, security, and deterrence.",
     images: [
       {
         url: "/logo/icon.png",
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Arqus Aerospace | Space Technology & Innovation",
+    title: "Arqus Aerospace | Defence Hardware for Orbit",
     description:
-      "Developing cutting-edge space technology solutions including orbital datacenters, commercial space stations, and satellite broadband constellations.",
+      "Sovereign hardware for space and defence — physical AI systems that protect the next domain of trade, security, and deterrence.",
     images: ["/logo/icon.png"],
   },
   robots: {
@@ -109,9 +109,9 @@ const jsonLd = {
       "@type": "WebPage",
       "@id": `${SITE_URL}/#webpage`,
       url: SITE_URL,
-      name: "Arqus Aerospace | Space Technology & Innovation",
+      name: "Arqus Aerospace | Defence Hardware for Orbit",
       description:
-        "Arqus Aerospace develops cutting-edge space technology solutions including orbital datacenters, commercial space stations, reusable launch systems, and satellite broadband constellations.",
+        "Arqus Aerospace develops sovereign hardware for space and defence — physical AI systems that protect the next domain of trade, security, and deterrence.",
       isPartOf: {
         "@id": `${SITE_URL}/#website`,
       },

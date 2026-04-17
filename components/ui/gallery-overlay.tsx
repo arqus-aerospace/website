@@ -16,7 +16,7 @@ export default function GalleryOverlay() {
         70,000 satellites by 2030. None of them can act on their own.
       </p>
       <p className="mt-5 font-instrument-serif font-normal text-2xl md:text-3xl lg:text-4xl">
-        <span style={{ textShadow: '0 0 10px rgba(245,158,11,1), 0 0 30px rgba(245,158,11,1), 0 0 60px rgba(245,158,11,0.8), 0 0 100px rgba(245,158,11,0.6), 0 0 150px rgba(245,158,11,0.4)' }}>Arqus gives them the tools to defend, inspect, and operate autonomously.</span>
+        <span style={{ textShadow: '0 0 10px rgba(245,158,11,1), 0 0 30px rgba(245,158,11,1), 0 0 60px rgba(245,158,11,0.8), 0 0 100px rgba(245,158,11,0.6), 0 0 150px rgba(245,158,11,0.4)' }}>Arqus builds the hardware to hold that ground.</span>
       </p>
     </div>
   );

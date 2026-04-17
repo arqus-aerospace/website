@@ -21,13 +21,13 @@ const HeroDemo: React.FC = () => {
           onCtaClick: () => setHiringOpen(true),
         }}
         trustBadge={{
-          text: "Autonomous Orbital Effectors, Powered by Edge AI"
+          text: "Physical AI for Space & Defence"
         }}
         headline={{
           line1: "Space needs",
           line2: "to act."
         }}
-        subtitle="Arqus builds the hardware and AI that make satellites act. Our autonomous effector modules — from directed energy to robotic systems to software-defined EW — plug into any platform, giving it the ability to defend, inspect, service, and deny on its own, in real-time."
+        subtitle="Trade was protected at sea in the 1800s. In the air in the 1900s. This century, it will be protected in orbit."
         button={{
           text: "Request a Briefing",
           onClick: () => { window.open("https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ15tGIByLIjJQvaJTQ8l5uMUn7D4lfSh2552_4GjIYMZJzJICFthQB0coAckWtaOGm48eX4OGLa", "_blank"); }
