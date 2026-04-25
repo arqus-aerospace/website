@@ -1,31 +1,33 @@
 import type { Metadata } from "next";
+import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-import CursorGlow from "@/components/ui/cursor-glow";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+  display: "swap",
+});
 
 const SITE_URL = "https://arqusaerospace.com";
 
 export const metadata: Metadata = {
   title: {
-    default: "Arqus Aerospace | Space Technology & Innovation",
+    default: "Arqus Aerospace",
     template: "%s | Arqus Aerospace",
   },
   description:
-    "Arqus Aerospace develops cutting-edge space technology solutions including orbital datacenters, commercial space stations, reusable launch systems, and satellite broadband constellations.",
+    "A European aerospace company. Based in Munich. Building the space arsenal.",
   metadataBase: new URL(SITE_URL),
-  alternates: {
-    canonical: "/",
-  },
-  keywords: [
-    "aerospace",
-    "space technology",
-    "orbital datacenters",
-    "commercial space stations",
-    "reusable launch systems",
-    "satellite broadband",
-    "on-orbit servicing",
-    "space defense",
-    "Arqus Aerospace",
-  ],
+  alternates: { canonical: "/" },
   authors: [{ name: "Arqus Aerospace" }],
   creator: "Arqus Aerospace",
   publisher: "Arqus Aerospace",
@@ -34,23 +36,23 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     siteName: "Arqus Aerospace",
-    title: "Arqus Aerospace | Space Technology & Innovation",
+    title: "Arqus Aerospace",
     description:
-      "Developing cutting-edge space technology solutions including orbital datacenters, commercial space stations, reusable launch systems, and satellite broadband constellations.",
+      "A European aerospace company. Based in Munich. Building the space arsenal.",
     images: [
       {
         url: "/logo/icon.png",
         width: 512,
         height: 512,
-        alt: "Arqus Aerospace Logo",
+        alt: "Arqus Aerospace",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Arqus Aerospace | Space Technology & Innovation",
+    title: "Arqus Aerospace",
     description:
-      "Developing cutting-edge space technology solutions including orbital datacenters, commercial space stations, and satellite broadband constellations.",
+      "A European aerospace company. Based in Munich. Building the space arsenal.",
     images: ["/logo/icon.png"],
   },
   robots: {
@@ -84,9 +86,7 @@ const jsonLd = {
       },
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Maria-Merian-Straße",
-        addressLocality: "Ottobrunn",
-        postalCode: "85521",
+        addressLocality: "Munich",
         addressCountry: "DE",
       },
       contactPoint: {
@@ -94,54 +94,32 @@ const jsonLd = {
         email: "contact@arqusaerospace.com",
         contactType: "general",
       },
-      sameAs: [],
     },
     {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
       url: SITE_URL,
       name: "Arqus Aerospace",
-      publisher: {
-        "@id": `${SITE_URL}/#organization`,
-      },
-    },
-    {
-      "@type": "WebPage",
-      "@id": `${SITE_URL}/#webpage`,
-      url: SITE_URL,
-      name: "Arqus Aerospace | Space Technology & Innovation",
-      description:
-        "Arqus Aerospace develops cutting-edge space technology solutions including orbital datacenters, commercial space stations, reusable launch systems, and satellite broadband constellations.",
-      isPartOf: {
-        "@id": `${SITE_URL}/#website`,
-      },
-      about: {
-        "@id": `${SITE_URL}/#organization`,
-      },
+      publisher: { "@id": `${SITE_URL}/#organization` },
     },
   ],
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${inter.variable} ${instrumentSerif.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>
-        <CursorGlow glowRadius={70} />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
