@@ -360,21 +360,17 @@
   }
   .arena-drone {
     position: absolute;
+    left: 0; top: 0;
     width: var(--w, 56px);
     color: #c9c5bb;
     cursor: pointer;
     z-index: 3;
-    transition: transform .15s ease, opacity .25s ease, filter .2s ease;
-    animation: arenaDroneFloat var(--float, 5s) ease-in-out infinite;
+    transition: opacity .25s ease, filter .2s ease;
     will-change: transform;
   }
   .arena-drone:hover { color: var(--laser); filter: drop-shadow(0 0 8px var(--laser-glow)); }
-  .arena-drone.destroyed { opacity: 0; transform: scale(0.4) rotate(20deg); }
+  .arena-drone.destroyed { opacity: 0; }
   .arena-drone svg { width: 100%; height: auto; display: block; }
-  @keyframes arenaDroneFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
-  }
   .arena-laser {
     position: absolute;
     height: 2px;
@@ -427,6 +423,39 @@
     z-index: 7; pointer-events: none;
     opacity: 0.7;
   }
+  .arena-modes {
+    position: absolute;
+    top: 38px; left: 14px;
+    display: inline-flex;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    padding: 3px;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(6px);
+    z-index: 8;
+  }
+  .arena-mode {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 6px 12px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: background .2s, color .2s;
+  }
+  .arena-mode:hover { color: var(--ink-2); }
+  .arena-mode.is-active {
+    background: var(--ink);
+    color: #0a0a0a;
+    font-weight: 600;
+  }
+  .thesis-arena.auto-mode { cursor: default; }
+  .thesis-arena.auto-mode .arena-drone { cursor: default; }
 
   .pull-quote {
     margin: clamp(60px, 12vh, 140px) 0 0;
@@ -459,7 +488,7 @@
   .suite-drones {
     position: relative;
     width: 100%;
-    height: clamp(420px, 70vh, 720px);
+    height: clamp(340px, 52vh, 540px);
     overflow: hidden;
     background:
       radial-gradient(120% 80% at 50% 110%, #14181d 0%, transparent 60%),
@@ -505,7 +534,7 @@
   }
   .suite-intro {
     position: absolute; inset: 0;
-    padding: clamp(40px, 8vh, 96px) var(--pad);
+    padding: clamp(28px, 5vh, 64px) var(--pad);
     display: flex; flex-direction: column; justify-content: space-between;
     pointer-events: none;
   }
@@ -558,7 +587,10 @@
     padding: 22px 22px 28px;
     border-right: 1px solid var(--rule);
     display: flex; flex-direction: column;
+    cursor: pointer;
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), background .35s;
   }
+  .suite-card:hover { transform: translateY(-6px); background: rgba(255,42,42,0.025); }
   .suite-card:last-child { border-right: none; }
   .card-art {
     position: relative;
@@ -568,6 +600,59 @@
     overflow: hidden;
   }
   .card-art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .card-art .laser {
+    opacity: 0.55;
+    transition: opacity .25s, stroke-width .25s;
+  }
+  .suite-card:hover .card-art .laser { opacity: 1; animation: cardLaserPulse .55s ease-in-out infinite alternate; }
+  @keyframes cardLaserPulse {
+    from { stroke-width: 1.2; filter: drop-shadow(0 0 0 rgba(255,42,42,0)); }
+    to   { stroke-width: 2.2; filter: drop-shadow(0 0 6px rgba(255,42,42,0.75)); }
+  }
+  .card-art .laser-tip {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: r .2s, opacity .2s;
+  }
+  .suite-card:hover .card-art .laser-tip { animation: cardTipPulse .55s ease-in-out infinite alternate; }
+  @keyframes cardTipPulse {
+    from { r: 2.5; opacity: 1; }
+    to   { r: 5;   opacity: 0.65; }
+  }
+  .card-art .target-drone {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: cardDroneBob 3.6s ease-in-out infinite;
+    color: #c9c5bb;
+    transition: color .25s, filter .25s;
+  }
+  .suite-card:hover .card-art .target-drone {
+    color: #ff7a7a;
+    filter: drop-shadow(0 0 6px rgba(255,42,42,0.6));
+    animation-duration: 1.6s;
+  }
+  @keyframes cardDroneBob {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(0, -5px); }
+  }
+  .suite-card.firing .card-art .vehicle { animation: cardVehicleKick .35s ease-out; }
+  @keyframes cardVehicleKick {
+    0%   { transform: translate(0, 0); }
+    35%  { transform: translate(0, 2px); }
+    100% { transform: translate(0, 0); }
+  }
+  .suite-card.firing .card-art .laser-flash {
+    animation: cardLaserFlash .35s ease-out forwards;
+  }
+  .card-art .laser-flash {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes cardLaserFlash {
+    0%   { opacity: 1; r: 4; }
+    100% { opacity: 0; r: 14; }
+  }
   .suite-card h3 {
     font-family: var(--sans);
     font-weight: 800;
@@ -886,66 +971,17 @@
     .doctrine-flow { grid-template-columns: 1fr; }
   }
 
-  /* ───────── COMPETITION TABLE ───────── */
-  .compete .s-headline { max-width: 18ch; }
-  .compete-table {
-    border-top: 1px solid var(--rule);
-    font-size: 14px;
-  }
-  .compete-row {
-    display: grid;
-    grid-template-columns: 1.4fr repeat(4, 1fr);
-    gap: 24px;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--rule);
-    align-items: center;
-  }
-  .compete-row.head {
-    color: var(--muted);
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    padding: 16px 0;
-  }
-  .compete-row.head .arqus-h {
-    color: var(--ink);
-    font-weight: 600;
-  }
-  .compete-row .crit {
-    color: var(--body);
-    font-weight: 500;
-  }
-  .compete-row .cell {
-    color: var(--body);
-    font-size: 13px;
-  }
-  .compete-row .cell.arqus {
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .compete-row .cell.arqus::before {
-    content: "";
-    display: inline-block;
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--laser);
-    box-shadow: 0 0 8px var(--laser-glow);
-    margin-right: 8px;
-    vertical-align: middle;
-  }
-  @media (max-width: 880px) {
-    .compete-row { grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; }
-    .compete-row.head { display: none; }
-    .compete-row .crit { grid-column: 1 / -1; font-family: var(--serif); font-size: 22px; color: var(--ink); padding-bottom: 8px; border-bottom: 1px solid var(--rule); margin-bottom: 8px; }
-    .compete-row .cell::before {
-      content: attr(data-label);
-      display: block;
-      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
-      margin-bottom: 4px;
-    }
-  }
-
   /* ───────── TEAM ───────── */
-  .team .s-headline { max-width: 16ch; }
+  .team { padding-top: clamp(48px, 7vh, 96px); padding-bottom: clamp(48px, 7vh, 96px); }
+  .team .team-head {
+    display: flex; align-items: baseline; gap: 24px;
+    grid-template-columns: none;
+    margin-bottom: clamp(28px, 4vh, 48px);
+  }
+  .team .s-headline {
+    max-width: 22ch;
+    font-size: clamp(28px, 4vw, 56px);
+  }
   .team-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1131,17 +1167,6 @@
 <!-- ───────── NAV ───────── -->
 <nav class="nav" id="nav">
   <a href="#top" class="wordmark">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <!-- arqus mark: little satellite pixel glyph -->
-      <rect x="11" y="2" width="2" height="2"/>
-      <rect x="10" y="5" width="4" height="4"/>
-      <rect x="11" y="10" width="2" height="4"/>
-      <rect x="9" y="10" width="6" height="3"/>
-      <rect x="2" y="11" width="6" height="3"/>
-      <rect x="2" y="14" width="2" height="2"/>
-      <rect x="16" y="11" width="6" height="3"/>
-      <rect x="20" y="14" width="2" height="2"/>
-    </svg>
     Arqus
   </a>
   <div class="nav-links">
@@ -1161,6 +1186,35 @@
 <!-- ───────── HERO ───────── -->
 <section class="hero" data-screen-label="Hero">
   <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-satellite" aria-hidden="true">
+    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#0a1530"/>
+          <stop offset="1" stop-color="#02060f"/>
+        </linearGradient>
+      </defs>
+      <g transform="translate(400,300) rotate(15)">
+        <rect x="-30" y="-60" width="60" height="120" fill="#0a0a0a" stroke="#1a1a1a"/>
+        <rect x="-22" y="-50" width="44" height="20" fill="#1a1a1a"/>
+        <rect x="-22" y="-20" width="44" height="40" fill="#0e0e0e"/>
+        <rect x="-220" y="-30" width="180" height="60" fill="url(#panel)" stroke="#0a0a0a"/>
+        <rect x="40" y="-30" width="180" height="60" fill="url(#panel)" stroke="#0a0a0a"/>
+        <g stroke="#06101f" stroke-width="0.5">
+          <line x1="-200" y1="-30" x2="-200" y2="30"/>
+          <line x1="-160" y1="-30" x2="-160" y2="30"/>
+          <line x1="-120" y1="-30" x2="-120" y2="30"/>
+          <line x1="-80" y1="-30" x2="-80" y2="30"/>
+          <line x1="80" y1="-30" x2="80" y2="30"/>
+          <line x1="120" y1="-30" x2="120" y2="30"/>
+          <line x1="160" y1="-30" x2="160" y2="30"/>
+          <line x1="200" y1="-30" x2="200" y2="30"/>
+        </g>
+        <line x1="0" y1="-60" x2="0" y2="-90" stroke="#222" stroke-width="2"/>
+        <circle cx="0" cy="-94" r="3" fill="#222"/>
+      </g>
+    </svg>
+  </div>
   <div class="hero-vignette" aria-hidden="true"></div>
 
   <h1 class="hero-headline display">Building the<br/>space <em>arsenal</em>.</h1>
@@ -1169,6 +1223,11 @@
     <div></div>
     <div class="hero-meta">
       A European aerospace company. Based in Munich. For briefings, reach out at <a href="mailto:contact@arqusaerospace.com">contact@arqusaerospace.com</a>.
+      <br/>
+      <a class="join" href="mailto:contact@arqusaerospace.com">
+        Join us
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
     </div>
   </div>
 </section>
@@ -1177,7 +1236,7 @@
 <section class="s thesis" id="thesis" data-screen-label="02 Thesis">
   <div class="thesis-layout">
     <article class="thesis-paper reveal" data-d="100">
-      <h3>The Space Arsenal Thesis</h3>
+      <h3>Our Thesis</h3>
       <p>Two hundred years ago, whoever controlled the seas controlled trade, power, and the future. Fifty years ago, the same was true of airspace. The US spent roughly <em>$2 trillion</em> on air dominance because the alternative was losing.</p>
       <p>Today, that high ground is moving to <em>orbit</em>, and almost nobody has noticed. The same physics now apply on the ground: cheap robotic swarms across air, sea, and land can saturate any defense built around expensive missiles.</p>
       <p>Europe needs dominance in this final frontier. We are building the <em>space arsenal</em>: autonomous, directed-energy defense priced per intercept in cents, not millions.</p>
@@ -1188,8 +1247,13 @@
       <div class="arena-ground"></div>
 
       <div class="arena-hud">
-        <span>Live · ARQUS-1 turret</span>
+        <span></span>
         <span class="score">Intercepts: <span id="arenaScore">0</span></span>
+      </div>
+
+      <div class="arena-modes" role="group" aria-label="Engagement mode">
+        <button class="arena-mode is-active" data-mode="manual" type="button">Manual</button>
+        <button class="arena-mode" data-mode="auto" type="button">Autonomous</button>
       </div>
 
       <div class="arena-tower">
@@ -1258,15 +1322,15 @@
     </div>
     <div class="suite-haze"></div>
 
-    <svg class="drone" viewBox="0 0 100 60" style="--y:18%;--size:72px;--dur:2.6s;--delay:.05s;--end-x:-22vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
-    <svg class="drone" viewBox="0 0 100 60" style="--y:30%;--size:46px;--dur:3.1s;--delay:.35s;--end-x:-42vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
-    <svg class="drone" viewBox="0 0 100 60" style="--y:14%;--size:36px;--dur:3.4s;--delay:.55s;--end-x:-68vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
-    <svg class="drone" viewBox="0 0 100 60" style="--y:42%;--size:62px;--dur:2.9s;--delay:.7s;--end-x:-30vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
-    <svg class="drone" viewBox="0 0 100 60" style="--y:22%;--size:54px;--dur:3.0s;--delay:.95s;--end-x:-55vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
-    <svg class="drone" viewBox="0 0 100 60" style="--y:50%;--size:40px;--dur:3.3s;--delay:1.2s;--end-x:-72vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
-    <svg class="drone" viewBox="0 0 100 60" style="--y:34%;--size:32px;--dur:3.5s;--delay:1.45s;--end-x:-85vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
-    <svg class="drone" viewBox="0 0 100 60" style="--y:46%;--size:50px;--dur:3.1s;--delay:1.7s;--end-x:-45vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
-    <svg class="drone" viewBox="0 0 100 60" style="--y:26%;--size:28px;--dur:3.6s;--delay:1.95s;--end-x:-92vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:18%;--size:72px;--dur:1.3s;--delay:.05s;--end-x:-22vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:30%;--size:46px;--dur:1.5s;--delay:.2s;--end-x:-42vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:14%;--size:36px;--dur:1.7s;--delay:.3s;--end-x:-68vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:42%;--size:62px;--dur:1.45s;--delay:.4s;--end-x:-30vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:22%;--size:54px;--dur:1.5s;--delay:.55s;--end-x:-55vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:50%;--size:40px;--dur:1.65s;--delay:.7s;--end-x:-72vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:34%;--size:32px;--dur:1.75s;--delay:.85s;--end-x:-85vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:46%;--size:50px;--dur:1.55s;--delay:1s;--end-x:-45vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:26%;--size:28px;--dur:1.8s;--delay:1.15s;--end-x:-92vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
 
     <div class="suite-intro">
       <div class="suite-top-row">
@@ -1296,10 +1360,21 @@
           <rect x="50"  y="105" width="60" height="10" fill="#11141a"/>
           <rect x="120" y="98"  width="50" height="17" fill="#11141a"/>
           <rect x="170" y="108" width="30" height="7"  fill="#11141a"/>
-          <rect x="92" y="60" width="6" height="55" fill="#1f242c"/>
-          <rect x="86" y="58" width="18" height="6" fill="#262b34"/>
-          <line x1="95" y1="60" x2="160" y2="14" stroke="#ff2a2a" stroke-width="1.4" stroke-linecap="round"/>
-          <circle cx="160" cy="14" r="2.5" fill="#ff2a2a"/>
+          <g class="vehicle">
+            <rect x="92" y="60" width="6" height="55" fill="#1f242c"/>
+            <rect x="86" y="58" width="18" height="6" fill="#262b34"/>
+          </g>
+          <line class="laser" x1="95" y1="60" x2="160" y2="14" stroke="#ff2a2a" stroke-width="1.4" stroke-linecap="round"/>
+          <g class="target-drone" transform="translate(150,6)">
+            <g fill="currentColor">
+              <circle cx="2" cy="3" r="1.8"/><circle cx="18" cy="3" r="1.8"/>
+              <circle cx="2" cy="13" r="1.8"/><circle cx="18" cy="13" r="1.8"/>
+              <rect x="7" y="6" width="6" height="4" rx="0.8"/>
+              <path d="M4 5 L8 7 M16 5 L12 7 M4 11 L8 9 M16 11 L12 9" stroke="currentColor" stroke-width="0.7" fill="none"/>
+            </g>
+          </g>
+          <circle class="laser-tip" cx="160" cy="14" r="2.5" fill="#ff2a2a"/>
+          <circle class="laser-flash" cx="160" cy="14" r="0" fill="#ffd6b0"/>
         </svg>
       </div>
       <h3>Critical Infrastructure</h3>
@@ -1317,7 +1392,7 @@
           </defs>
           <rect width="200" height="150" fill="url(#terrSky)"/>
           <rect y="120" width="200" height="30" fill="#0a0c0f"/>
-          <g transform="translate(60,84)">
+          <g class="vehicle" transform="translate(60,84)">
             <rect x="0" y="20" width="80" height="20" rx="2" fill="#1a1e25"/>
             <rect x="6" y="14" width="50" height="10" fill="#222731"/>
             <rect x="56" y="8" width="14" height="16" fill="#1a1e25"/>
@@ -1326,8 +1401,17 @@
             <circle cx="34" cy="42" r="6" fill="#0a0c0f"/>
             <circle cx="62" cy="42" r="6" fill="#0a0c0f"/>
           </g>
-          <line x1="124" y1="88" x2="180" y2="20" stroke="#ff2a2a" stroke-width="1.4" stroke-linecap="round"/>
-          <circle cx="180" cy="20" r="2.5" fill="#ff2a2a"/>
+          <line class="laser" x1="124" y1="88" x2="180" y2="20" stroke="#ff2a2a" stroke-width="1.4" stroke-linecap="round"/>
+          <g class="target-drone" transform="translate(170,12)">
+            <g fill="currentColor">
+              <circle cx="2" cy="3" r="1.8"/><circle cx="18" cy="3" r="1.8"/>
+              <circle cx="2" cy="13" r="1.8"/><circle cx="18" cy="13" r="1.8"/>
+              <rect x="7" y="6" width="6" height="4" rx="0.8"/>
+              <path d="M4 5 L8 7 M16 5 L12 7 M4 11 L8 9 M16 11 L12 9" stroke="currentColor" stroke-width="0.7" fill="none"/>
+            </g>
+          </g>
+          <circle class="laser-tip" cx="180" cy="20" r="2.5" fill="#ff2a2a"/>
+          <circle class="laser-flash" cx="180" cy="20" r="0" fill="#ffd6b0"/>
         </svg>
       </div>
       <h3>Terrestrial Platforms</h3>
@@ -1531,77 +1615,11 @@
   </div>
 </section>
 
-<!-- ───────── COMPETITION ───────── -->
-<section class="s compete" id="compete" data-screen-label="07 Why Arqus">
-  <header class="s-head">
-    <div>
-      <span class="label">Why Arqus</span>
-      <div class="num" style="margin-top:14px">05 / The only plug-and-protect</div>
-    </div>
-    <h2 class="s-headline display reveal">Defensive payload against <em>swarms</em>.</h2>
-  </header>
-
-  <div class="compete-table">
-    <div class="compete-row head">
-      <div></div>
-      <div class="arqus-h">Arqus Suite</div>
-      <div>High-power lasers</div>
-      <div>Interceptors</div>
-      <div>RF Jamming</div>
-    </div>
-    <div class="compete-row reveal" data-d="100">
-      <div class="crit">Action</div>
-      <div class="cell arqus" data-label="Arqus">Dazzle &amp; destroy</div>
-      <div class="cell" data-label="Lasers">Melt the target</div>
-      <div class="cell" data-label="Interceptors">Kinetic kill</div>
-      <div class="cell" data-label="Jamming">Jam RF only</div>
-    </div>
-    <div class="compete-row reveal" data-d="150">
-      <div class="crit">Response time</div>
-      <div class="cell arqus" data-label="Arqus">~ms</div>
-      <div class="cell" data-label="Lasers">Seconds</div>
-      <div class="cell" data-label="Interceptors">Minutes</div>
-      <div class="cell" data-label="Jamming">Seconds</div>
-    </div>
-    <div class="compete-row reveal" data-d="200">
-      <div class="crit">Cost per shot</div>
-      <div class="cell arqus" data-label="Arqus">&lt;€0.10</div>
-      <div class="cell" data-label="Lasers">~€1</div>
-      <div class="cell" data-label="Interceptors">€400+</div>
-      <div class="cell" data-label="Jamming">n/a</div>
-    </div>
-    <div class="compete-row reveal" data-d="250">
-      <div class="crit">Form factor</div>
-      <div class="cell arqus" data-label="Arqus">Small, low power</div>
-      <div class="cell" data-label="Lasers">EU-pallet, high power</div>
-      <div class="cell" data-label="Interceptors">Custom launch pods</div>
-      <div class="cell" data-label="Jamming">Bulky, high power</div>
-    </div>
-    <div class="compete-row reveal" data-d="300">
-      <div class="crit">Autonomy</div>
-      <div class="cell arqus" data-label="Arqus">Full on-board</div>
-      <div class="cell" data-label="Lasers">Manual</div>
-      <div class="cell" data-label="Interceptors">Manual reload</div>
-      <div class="cell" data-label="Jamming">Manual tune</div>
-    </div>
-    <div class="compete-row reveal" data-d="350">
-      <div class="crit">Magazine</div>
-      <div class="cell arqus" data-label="Arqus">Unlimited</div>
-      <div class="cell" data-label="Lasers">Power-bound</div>
-      <div class="cell" data-label="Interceptors">1 per target</div>
-      <div class="cell" data-label="Jamming">N/A</div>
-    </div>
-  </div>
-</section>
-
 <!-- ───────── TEAM ───────── -->
 <section class="s team" id="team" data-screen-label="08 Team">
-  <header class="s-head">
-    <div>
-      <span class="label">Team</span>
-      <div class="num" style="margin-top:14px">06 / Operators</div>
-    </div>
-    <h2 class="s-headline display reveal">We come from space and defense, and <em>left to build this</em>.</h2>
+  <header class="s-head team-head">
+    <span class="label">Team</span>
+    <h2 class="s-headline display reveal">Operators behind the <em>arsenal</em>.</h2>
   </header>
 
   <div class="team-grid">
@@ -1702,14 +1720,57 @@
   // Drone swarm: trigger fly-in when the suite section scrolls into view
   const droneStage = document.querySelector('.suite-drones');
   if (droneStage) {
+    const SWARM_INNER = '<g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g>';
+    const rnd = (a, b) => a + Math.random() * (b - a);
+
+    function spawnSwarm() {
+      const count = Math.round(rnd(8, 14));
+      const baseY = rnd(12, 52);
+      const baseDur = rnd(1.3, 1.8);
+      const baseEnd = rnd(-115, -90);
+      for (let i = 0; i < count; i++) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 100 60');
+        svg.classList.add('drone');
+        const y = baseY + rnd(-6, 6);
+        const size = rnd(14, 26);
+        const dur = baseDur + rnd(-0.15, 0.15);
+        const delay = rnd(0, 0.45);
+        const endX = baseEnd + rnd(-6, 6);
+        svg.setAttribute('style',
+          `--y:${y.toFixed(1)}%;--size:${size.toFixed(0)}px;--dur:${dur.toFixed(2)}s;--delay:${delay.toFixed(2)}s;--end-x:${endX.toFixed(0)}vw`);
+        svg.innerHTML = SWARM_INNER;
+        droneStage.appendChild(svg);
+        const lifetime = (dur + delay) * 1000 + 400;
+        setTimeout(() => svg.remove(), lifetime);
+      }
+    }
+
+    let swarmTimer = null;
+    function scheduleSwarm() {
+      const next = rnd(4500, 9000);
+      swarmTimer = setTimeout(() => {
+        spawnSwarm();
+        scheduleSwarm();
+      }, next);
+    }
+    function stopSwarms() {
+      if (swarmTimer) { clearTimeout(swarmTimer); swarmTimer = null; }
+    }
+
     const dio = new IntersectionObserver((entries) => {
       for (const e of entries) {
         if (e.isIntersecting) {
           droneStage.classList.add('drones-on');
-          dio.unobserve(e.target);
+          if (!swarmTimer) {
+            setTimeout(spawnSwarm, 2200);
+            scheduleSwarm();
+          }
+        } else {
+          stopSwarms();
         }
       }
-    }, { threshold: 0.25 });
+    }, { threshold: 0.15 });
     dio.observe(droneStage);
   }
 
@@ -1726,44 +1787,65 @@
 
     function rand(min, max) { return min + Math.random() * (max - min); }
 
-    function spawnDrone() {
-      const d = document.createElement('div');
-      d.className = 'arena-drone';
-      d.innerHTML = DRONE_SVG;
-      const w = rand(36, 64);
-      d.style.setProperty('--w', w + 'px');
-      d.style.setProperty('--float', rand(4, 7) + 's');
-      d.style.left = rand(6, 88) + '%';
-      d.style.top = rand(10, 55) + '%';
-      d.style.animationDelay = (-rand(0, 5)) + 's';
-      d.addEventListener('click', (e) => {
-        e.stopPropagation();
-        destroyDrone(d);
-      });
-      arena.appendChild(d);
-      return d;
+    // Live drone state
+    const drones = [];
+
+    function arenaSize() {
+      const r = arena.getBoundingClientRect();
+      return { w: r.width, h: r.height, top: 6, bottom: r.height * 0.72 };
     }
 
-    function destroyDrone(d) {
-      if (d.classList.contains('destroyed')) return;
+    function paintDrone(dr) {
+      dr.el.style.transform = `translate(${dr.x}px, ${dr.y}px)`;
+    }
+
+    function spawnDrone() {
+      const el = document.createElement('div');
+      el.className = 'arena-drone';
+      el.innerHTML = DRONE_SVG;
+      const w = rand(36, 64);
+      el.style.setProperty('--w', w + 'px');
+      const { w: aw, h: ah, top, bottom } = arenaSize();
+      const dr = {
+        el,
+        w,
+        h: w * 0.6,
+        x: rand(10, Math.max(20, aw - w - 10)),
+        y: rand(top + 10, Math.max(top + 20, bottom * 0.7)),
+        // px / second
+        vx: (Math.random() < 0.5 ? -1 : 1) * rand(20, 55),
+        vy: (Math.random() < 0.5 ? -1 : 1) * rand(10, 28),
+        dead: false,
+      };
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        destroyDrone(dr);
+      });
+      arena.appendChild(el);
+      paintDrone(dr);
+      drones.push(dr);
+      return dr;
+    }
+
+    function destroyDrone(dr) {
+      if (!dr || dr.dead) return;
+      dr.dead = true;
+      dr.vx = 0; dr.vy = 0;
+
       const arenaRect = arena.getBoundingClientRect();
-      const droneRect = d.getBoundingClientRect();
       const towerRect = tower.getBoundingClientRect();
 
-      // turret pivot point (approx. emitter location)
       const ox = towerRect.left + towerRect.width / 2 - arenaRect.left;
       const oy = towerRect.top + towerRect.height * 0.42 - arenaRect.top;
-      const tx = droneRect.left + droneRect.width / 2 - arenaRect.left;
-      const ty = droneRect.top + droneRect.height / 2 - arenaRect.top;
+      const tx = dr.x + dr.w / 2;
+      const ty = dr.y + dr.h / 2;
 
       const dx = tx - ox, dy = ty - oy;
       const dist = Math.hypot(dx, dy);
       const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
 
-      // aim turret (default barrel points up → angle - 90)
       turret.style.transform = `rotate(${angleDeg + 90}deg)`;
 
-      // fire laser
       const laser = document.createElement('div');
       laser.className = 'arena-laser fire';
       laser.style.left = ox + 'px';
@@ -1773,7 +1855,6 @@
       arena.appendChild(laser);
       laser.addEventListener('animationend', () => laser.remove());
 
-      // explosion flash at drone
       const flash = document.createElement('div');
       flash.className = 'arena-flash pop';
       flash.style.left = tx + 'px';
@@ -1781,21 +1862,42 @@
       arena.appendChild(flash);
       flash.addEventListener('animationend', () => flash.remove());
 
-      // destroy & respawn
       setTimeout(() => {
-        d.classList.add('destroyed');
+        dr.el.classList.add('destroyed');
         score += 1;
         if (scoreEl) scoreEl.textContent = score;
         setTimeout(() => {
-          d.remove();
+          const i = drones.indexOf(dr);
+          if (i !== -1) drones.splice(i, 1);
+          dr.el.remove();
           spawnDrone();
         }, 700);
       }, 120);
     }
 
-    // turret tracks the cursor when no shot is firing
-    let trackTimer;
+    // RAF physics loop: drift, bounce off edges
+    let lastT = performance.now();
+    function tick(now) {
+      const dt = Math.min(0.05, (now - lastT) / 1000);
+      lastT = now;
+      const { w: aw, top, bottom } = arenaSize();
+      for (const dr of drones) {
+        if (dr.dead) continue;
+        dr.x += dr.vx * dt;
+        dr.y += dr.vy * dt;
+        if (dr.x <= 0)         { dr.x = 0;            dr.vx =  Math.abs(dr.vx); }
+        if (dr.x + dr.w >= aw) { dr.x = aw - dr.w;    dr.vx = -Math.abs(dr.vx); }
+        if (dr.y <= top)       { dr.y = top;          dr.vy =  Math.abs(dr.vy); }
+        if (dr.y >= bottom)    { dr.y = bottom;       dr.vy = -Math.abs(dr.vy); }
+        paintDrone(dr);
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    // turret tracks the cursor in manual mode
     arena.addEventListener('mousemove', (e) => {
+      if (mode !== 'manual') return;
       const arenaRect = arena.getBoundingClientRect();
       const towerRect = tower.getBoundingClientRect();
       const ox = towerRect.left + towerRect.width / 2 - arenaRect.left;
@@ -1804,8 +1906,32 @@
       const ty = e.clientY - arenaRect.top;
       const angleDeg = Math.atan2(ty - oy, tx - ox) * 180 / Math.PI;
       turret.style.transform = `rotate(${angleDeg + 90}deg)`;
-      clearTimeout(trackTimer);
     });
+
+    // Mode toggle (manual vs autonomous)
+    let mode = 'manual';
+    let autoTimer = null;
+    const modeButtons = arena.querySelectorAll('.arena-mode');
+
+    function runAutoCycle() {
+      const alive = drones.filter(d => !d.dead);
+      if (!alive.length) return;
+      destroyDrone(alive[Math.floor(Math.random() * alive.length)]);
+    }
+
+    function setMode(next) {
+      if (next === mode) return;
+      mode = next;
+      modeButtons.forEach(b => b.classList.toggle('is-active', b.dataset.mode === mode));
+      arena.classList.toggle('auto-mode', mode === 'auto');
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+      if (mode === 'auto') {
+        runAutoCycle();
+        autoTimer = setInterval(runAutoCycle, 1400);
+      }
+    }
+
+    modeButtons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
     // initial swarm
     for (let i = 0; i < 5; i++) spawnDrone();
