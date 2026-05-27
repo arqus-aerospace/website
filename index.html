@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Arqus — Building the space arsenal.</title>
+<title>Arqus. Building the space arsenal.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet" />
@@ -16,16 +16,16 @@
     font-style: normal;
   }
   :root {
-    --bg: #0b0e14;
-    --bg-2: #0b0e14;
-    --ink: #ff4b2b;        /* red for text */
-    --ink-2: rgba(255, 75, 43, 0.85);
-    --body: #ff4b2b;
-    --muted: #3a414a;
-    --rule: rgba(58, 65, 74, 0.4);
-    --rule-strong: #3a414a;
-    --laser: #f8f9fa;      /* white for accents */
-    --laser-glow: rgba(248, 249, 250, 0.55);
+    --bg: #000000;
+    --bg-2: #07070a;
+    --ink: #f1ecdd;        /* warm cream for display */
+    --ink-2: #e5e1d5;
+    --body: #c9c5bb;
+    --muted: #7a7568;
+    --rule: rgba(241,236,221,0.10);
+    --rule-strong: rgba(241,236,221,0.22);
+    --laser: #ff2a2a;
+    --laser-glow: rgba(255,42,42,0.55);
     --serif: "Aileron", sans-serif;
     --sans: "Aileron", sans-serif;
     --maxw: 1440px;
@@ -43,7 +43,7 @@
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
   }
-  ::selection { background: var(--laser); color: var(--bg); }
+  ::selection { background: var(--laser); color: #fff; }
   a { color: inherit; }
 
   /* ───────── Section header / labels ───────── */
@@ -268,91 +268,40 @@
     .thesis-layout { grid-template-columns: 1fr; }
   }
 
-  /* Paper on the left */
+  /* Thesis document on the left */
   .thesis-paper {
     position: relative;
-    background: #f3e9d2;
-    color: #1c1a14;
+    background:
+      radial-gradient(140% 90% at 0% 0%, rgba(241,236,221,0.04), transparent 55%),
+      linear-gradient(180deg, #0a0c10 0%, #06080b 100%);
+    color: var(--ink);
     padding: clamp(36px, 5vw, 64px) clamp(34px, 4.4vw, 56px);
+    border: 1px solid var(--rule);
+    border-top: 1px solid var(--laser);
     border-radius: 2px;
-    box-shadow:
-      0 30px 60px rgba(0,0,0,0.55),
-      0 8px 18px rgba(0,0,0,0.35),
-      inset 0 0 80px rgba(120, 92, 40, 0.08);
-    transform: rotate(-0.4deg);
-    background-image:
-      repeating-linear-gradient(180deg, transparent 0 30px, rgba(80,60,20,0.05) 30px 31px),
-      radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,0.6), transparent 50%),
-      radial-gradient(120% 80% at 100% 100%, rgba(120,90,30,0.10), transparent 50%);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45);
     overflow: hidden;
   }
-  .thesis-paper::before {
-    content: "";
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(circle at 8% 12%, rgba(120,80,20,0.10) 0 4px, transparent 5px),
-      radial-gradient(circle at 92% 80%, rgba(120,80,20,0.08) 0 6px, transparent 7px),
-      radial-gradient(circle at 70% 18%, rgba(120,80,20,0.06) 0 3px, transparent 4px);
-    pointer-events: none;
-    opacity: 0.6;
-  }
-  .thesis-paper .paper-head {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 28px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid rgba(28,26,20,0.18);
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: rgba(28,26,20,0.55);
-  }
-  .thesis-paper .paper-stamp {
-    border: 1.5px solid #a83232;
-    color: #a83232;
-    padding: 5px 10px;
-    letter-spacing: 0.3em;
-    font-weight: 700;
-    transform: rotate(-3deg);
-  }
   .thesis-paper h3 {
-    font-family: "Hanken Grotesk", serif;
-    font-weight: 700;
+    font-family: "Hanken Grotesk", sans-serif;
+    font-weight: 800;
     font-size: clamp(22px, 2.4vw, 32px);
     line-height: 1.1;
     margin: 0 0 22px;
     letter-spacing: -0.01em;
-    color: #1c1a14;
+    color: var(--ink);
   }
   .thesis-paper p {
-    font-family: "Hanken Grotesk", serif;
+    font-family: "Hanken Grotesk", sans-serif;
     font-size: clamp(15px, 1.15vw, 17px);
     line-height: 1.65;
-    color: #2a261c;
+    color: var(--body);
     margin: 0 0 14px;
   }
   .thesis-paper p em {
     font-style: italic;
-    color: #6a2020;
-    font-weight: 600;
-  }
-  .thesis-paper .paper-sig {
-    margin-top: 28px;
-    font-family: "Hanken Grotesk", cursive;
-    font-style: italic;
-    font-size: 22px;
-    color: #1c1a14;
-    transform: rotate(-1.5deg);
-    display: inline-block;
-  }
-  .thesis-paper .paper-sig-line {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(28,26,20,0.55);
-    margin-top: 4px;
-    font-style: normal;
-    transform: none;
-    display: block;
+    color: var(--ink);
+    font-weight: 500;
   }
 
   /* Interactive arena on the right */
@@ -1212,39 +1161,6 @@
 <!-- ───────── HERO ───────── -->
 <section class="hero" data-screen-label="Hero">
   <div class="hero-bg" aria-hidden="true"></div>
-  <div class="hero-satellite" aria-hidden="true">
-    <!-- Stylized satellite silhouette (placeholder until real image is dropped) -->
-    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0" stop-color="#0a1530"/>
-          <stop offset="1" stop-color="#02060f"/>
-        </linearGradient>
-      </defs>
-      <g transform="translate(400,300) rotate(15)">
-        <!-- main body -->
-        <rect x="-30" y="-60" width="60" height="120" fill="#0a0a0a" stroke="#1a1a1a"/>
-        <rect x="-22" y="-50" width="44" height="20" fill="#1a1a1a"/>
-        <rect x="-22" y="-20" width="44" height="40" fill="#0e0e0e"/>
-        <!-- panels -->
-        <rect x="-220" y="-30" width="180" height="60" fill="url(#panel)" stroke="#0a0a0a"/>
-        <rect x="40" y="-30" width="180" height="60" fill="url(#panel)" stroke="#0a0a0a"/>
-        <g stroke="#06101f" stroke-width="0.5">
-          <line x1="-200" y1="-30" x2="-200" y2="30"/>
-          <line x1="-160" y1="-30" x2="-160" y2="30"/>
-          <line x1="-120" y1="-30" x2="-120" y2="30"/>
-          <line x1="-80" y1="-30" x2="-80" y2="30"/>
-          <line x1="80" y1="-30" x2="80" y2="30"/>
-          <line x1="120" y1="-30" x2="120" y2="30"/>
-          <line x1="160" y1="-30" x2="160" y2="30"/>
-          <line x1="200" y1="-30" x2="200" y2="30"/>
-        </g>
-        <!-- antenna -->
-        <line x1="0" y1="-60" x2="0" y2="-90" stroke="#222" stroke-width="2"/>
-        <circle cx="0" cy="-94" r="3" fill="#222"/>
-      </g>
-    </svg>
-  </div>
   <div class="hero-vignette" aria-hidden="true"></div>
 
   <h1 class="hero-headline display">Building the<br/>space <em>arsenal</em>.</h1>
@@ -1253,40 +1169,18 @@
     <div></div>
     <div class="hero-meta">
       A European aerospace company. Based in Munich. For briefings, reach out at <a href="mailto:contact@arqusaerospace.com">contact@arqusaerospace.com</a>.
-      <br/>
-      <a class="join" href="mailto:contact@arqusaerospace.com">
-        Join us
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
     </div>
   </div>
-
-  <div class="scroll-cue">Scroll</div>
 </section>
 
 <!-- ───────── THESIS / PROBLEM ───────── -->
 <section class="s thesis" id="thesis" data-screen-label="02 Thesis">
-  <header class="s-head">
-    <div>
-      <span class="label">Thesis</span>
-      <div class="num" style="margin-top:14px">01 / The mission</div>
-    </div>
-    <h2 class="s-headline display reveal" style="max-width: 18ch;">Two hundred years ago, whoever controlled the seas controlled the world.</h2>
-  </header>
-
   <div class="thesis-layout">
     <article class="thesis-paper reveal" data-d="100">
-      <div class="paper-head">
-        <span>Memo · Arqus Aerospace</span>
-        <span class="paper-stamp">Confidential</span>
-      </div>
       <h3>The Space Arsenal Thesis</h3>
-      <p>Two hundred years ago, whoever controlled the seas controlled trade, power, and the future. Fifty years ago, the same was true of airspace — the US spent roughly <em>$2 trillion</em> on air dominance because the alternative was losing.</p>
-      <p>Today, that high ground is moving to <em>orbit</em>, and almost nobody has noticed. The same physics now apply on the ground: cheap robotic swarms — air, sea, land — can saturate any defense built around expensive missiles.</p>
+      <p>Two hundred years ago, whoever controlled the seas controlled trade, power, and the future. Fifty years ago, the same was true of airspace. The US spent roughly <em>$2 trillion</em> on air dominance because the alternative was losing.</p>
+      <p>Today, that high ground is moving to <em>orbit</em>, and almost nobody has noticed. The same physics now apply on the ground: cheap robotic swarms across air, sea, and land can saturate any defense built around expensive missiles.</p>
       <p>Europe needs dominance in this final frontier. We are building the <em>space arsenal</em>: autonomous, directed-energy defense priced per intercept in cents, not millions.</p>
-      <div class="paper-sig">M. Meersman
-        <span class="paper-sig-line">Chief Executive · May 2026</span>
-      </div>
     </article>
 
     <div class="thesis-arena" id="thesisArena" aria-label="Click drones to destroy them with the Arqus laser tower">
@@ -1572,7 +1466,7 @@
 
   <div class="doctrine-flow">
     <div class="step reveal" data-d="100">
-      <div class="pillar">01 — Sense</div>
+      <div class="pillar">01 / Sense</div>
       <div class="step-head">
         <span class="step-title">Sense.</span>
       </div>
@@ -1591,7 +1485,7 @@
     </div>
 
     <div class="step reveal" data-d="200">
-      <div class="pillar">02 — Decide</div>
+      <div class="pillar">02 / Decide</div>
       <div class="step-head">
         <span class="step-title">Decide.</span>
       </div>
@@ -1617,11 +1511,11 @@
           </svg>
         </div>
       </div>
-      <p>An on-board edge-AI neural engine characterises the threat and selects an action — sub-millisecond, with no operator in the loop for dazzling.</p>
+      <p>An on-board edge-AI neural engine characterises the threat and selects an action in sub-millisecond time, with no operator in the loop for dazzling.</p>
     </div>
 
     <div class="step reveal" data-d="300">
-      <div class="pillar">03 — Act</div>
+      <div class="pillar">03 / Act</div>
       <div class="step-head">
         <span class="step-title">Act.</span>
       </div>
@@ -1632,7 +1526,7 @@
           <div class="beam"></div>
         </div>
       </div>
-      <p>An ultra-fast scan pattern delivers maximum power on every pass — dazzling first, destruction on operator confirmation. Designed for multi-target engagement.</p>
+      <p>An ultra-fast scan pattern delivers maximum power on every pass. Dazzling first, destruction on operator confirmation. Designed for multi-target engagement.</p>
     </div>
   </div>
 </section>
@@ -1674,7 +1568,7 @@
       <div class="cell arqus" data-label="Arqus">&lt;€0.10</div>
       <div class="cell" data-label="Lasers">~€1</div>
       <div class="cell" data-label="Interceptors">€400+</div>
-      <div class="cell" data-label="Jamming">—</div>
+      <div class="cell" data-label="Jamming">n/a</div>
     </div>
     <div class="compete-row reveal" data-d="250">
       <div class="crit">Form factor</div>
@@ -1707,7 +1601,7 @@
       <span class="label">Team</span>
       <div class="num" style="margin-top:14px">06 / Operators</div>
     </div>
-    <h2 class="s-headline display reveal">We come from space and defense — and <em>left to build this</em>.</h2>
+    <h2 class="s-headline display reveal">We come from space and defense, and <em>left to build this</em>.</h2>
   </header>
 
   <div class="team-grid">
@@ -1753,7 +1647,7 @@
 <section class="cta-final" data-screen-label="10 CTA">
   <h2 class="display reveal">We secure <em>air-space</em>, together.</h2>
   <div class="cta-row reveal" data-d="200">
-    <div class="left">A European aerospace company. Based in Munich. For briefings, demos, and partnerships — reach out directly.</div>
+    <div class="left">A European aerospace company. Based in Munich. For briefings, demos, and partnerships, reach out directly.</div>
     <a class="cta-button" href="mailto:contact@arqusaerospace.com">
       contact@arqusaerospace.com
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
