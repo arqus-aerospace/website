@@ -1,0 +1,1922 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Arqus — Building the space arsenal.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet" />
+<script src="image-slot.js"></script>
+<style>
+  @font-face {
+    font-family: 'Aileron';
+    src: local('Aileron'), url('https://db.onlinewebfonts.com/t/3d6eb6a5fc1a62d0b5e7d583c847d04e.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
+  :root {
+    --bg: #0b0e14;
+    --bg-2: #0b0e14;
+    --ink: #ff4b2b;        /* red for text */
+    --ink-2: rgba(255, 75, 43, 0.85);
+    --body: #ff4b2b;
+    --muted: #3a414a;
+    --rule: rgba(58, 65, 74, 0.4);
+    --rule-strong: #3a414a;
+    --laser: #f8f9fa;      /* white for accents */
+    --laser-glow: rgba(248, 249, 250, 0.55);
+    --serif: "Aileron", sans-serif;
+    --sans: "Aileron", sans-serif;
+    --maxw: 1440px;
+    --pad: clamp(20px, 4vw, 56px);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--body); }
+  body {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: -0.039em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--laser); color: var(--bg); }
+  a { color: inherit; }
+
+  /* ───────── Section header / labels ───────── */
+  .label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.039em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .label::before {
+    content: "";
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--laser);
+    box-shadow: 0 0 12px var(--laser-glow);
+  }
+  .display {
+    font-family: var(--serif);
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 0.95;
+    letter-spacing: -0.075em;
+    text-wrap: balance;
+  }
+  .display em { font-family: "Hanken Grotesk", sans-serif; font-weight: 300; font-style: italic; letter-spacing: -0.02em; }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ───────── Top navigation ───────── */
+  .nav {
+    position: fixed; inset: 0 0 auto 0;
+    z-index: 50;
+    padding: 22px var(--pad);
+    display: flex; align-items: center; justify-content: space-between;
+    pointer-events: none;
+    transition: backdrop-filter .3s, background .3s, border-color .3s;
+    border-bottom: 1px solid transparent;
+  }
+  .nav.scrolled {
+    backdrop-filter: blur(14px) saturate(140%);
+    background: rgba(0,0,0,0.55);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav > * { pointer-events: auto; }
+  .wordmark {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    display: inline-flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .wordmark svg { width: 22px; height: 22px; }
+  .nav-links {
+    display: flex; align-items: center; gap: 28px;
+    font-size: 14px;
+    color: var(--body);
+  }
+  .nav-links a {
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity .2s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--ink); }
+  .nav-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 18px 10px 20px;
+    border-radius: 100px;
+    background: var(--ink);
+    color: #0a0a0a;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: transform .2s ease, background .2s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); background: #fff; }
+  .nav-cta svg { width: 14px; height: 14px; }
+  @media (max-width: 760px) { .nav-links { display: none; } }
+
+  /* ───────── HERO ───────── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    padding: 110px var(--pad) 56px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(120% 80% at 0% 0%, #d6e5ff 0%, transparent 35%),
+      radial-gradient(140% 100% at 90% 30%, #ff9a3c 0%, #b35a1e 22%, transparent 55%),
+      radial-gradient(120% 100% at 100% 100%, #1a0d05 0%, #000 60%),
+      linear-gradient(180deg, #000 0%, #03050b 60%, #000 100%);
+  }
+  .hero-satellite {
+    position: absolute; inset: 0; z-index: -1;
+    pointer-events: none;
+    opacity: 0.95;
+  }
+  .hero-satellite svg {
+    position: absolute;
+    width: 70%;
+    right: -10%;
+    top: 14%;
+    transform: rotate(-22deg);
+    filter: drop-shadow(0 30px 60px rgba(0,0,0,0.6));
+    opacity: 0.9;
+  }
+  .hero-vignette {
+    position: absolute; inset: 0; z-index: -1;
+    background: radial-gradient(60% 60% at 50% 90%, rgba(0,0,0,0.6) 0%, transparent 60%);
+  }
+  .hero-top {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+  .hero-top .label { justify-self: center; }
+  .hero-headline {
+    font-size: clamp(72px, 14vw, 240px);
+    margin: clamp(40px, 8vh, 90px) 0 0;
+    line-height: 0.9;
+  }
+  .hero-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: end;
+    margin-top: auto;
+    padding-top: 60px;
+  }
+  .hero-meta {
+    font-size: clamp(14px, 1.1vw, 16px);
+    color: var(--ink-2);
+    max-width: 420px;
+    margin-left: auto;
+  }
+  .hero-meta a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    color: var(--ink);
+  }
+  .hero-meta .join {
+    margin-top: 22px;
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 14px 22px 14px 26px;
+    border-radius: 100px;
+    background: var(--ink);
+    color: #0a0a0a;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 15px;
+    transition: transform .2s, background .2s;
+  }
+  .hero-meta .join:hover { background: #fff; transform: translateY(-1px); }
+  .hero-meta .join svg { width: 16px; height: 16px; }
+  .scroll-cue {
+    position: absolute; bottom: 28px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .scroll-cue::before, .scroll-cue::after {
+    content: ""; width: 28px; height: 1px; background: var(--rule-strong);
+  }
+  @media (max-width: 760px) {
+    .hero-bottom { grid-template-columns: 1fr; }
+    .hero-meta { margin-left: 0; max-width: 100%; }
+  }
+
+  /* ───────── Generic section frame ───────── */
+  section.s {
+    position: relative;
+    padding: clamp(80px, 12vh, 160px) var(--pad);
+    border-top: 1px solid var(--rule);
+  }
+  .s-head {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 40px;
+    align-items: baseline;
+    margin-bottom: clamp(40px, 8vh, 96px);
+  }
+  @media (max-width: 880px) {
+    .s-head { grid-template-columns: 1fr; gap: 20px; }
+  }
+  .s-head .num {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--muted);
+    font-size: 18px;
+  }
+  .s-headline {
+    font-size: clamp(40px, 7.4vw, 124px);
+  }
+
+  /* ───────── THESIS / PROBLEM ───────── */
+  .thesis .s-headline { max-width: 14ch; }
+  .thesis-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 4vw, 64px);
+    align-items: stretch;
+    margin-top: clamp(40px, 6vh, 80px);
+  }
+  @media (max-width: 960px) {
+    .thesis-layout { grid-template-columns: 1fr; }
+  }
+
+  /* Paper on the left */
+  .thesis-paper {
+    position: relative;
+    background: #f3e9d2;
+    color: #1c1a14;
+    padding: clamp(36px, 5vw, 64px) clamp(34px, 4.4vw, 56px);
+    border-radius: 2px;
+    box-shadow:
+      0 30px 60px rgba(0,0,0,0.55),
+      0 8px 18px rgba(0,0,0,0.35),
+      inset 0 0 80px rgba(120, 92, 40, 0.08);
+    transform: rotate(-0.4deg);
+    background-image:
+      repeating-linear-gradient(180deg, transparent 0 30px, rgba(80,60,20,0.05) 30px 31px),
+      radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,0.6), transparent 50%),
+      radial-gradient(120% 80% at 100% 100%, rgba(120,90,30,0.10), transparent 50%);
+    overflow: hidden;
+  }
+  .thesis-paper::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 8% 12%, rgba(120,80,20,0.10) 0 4px, transparent 5px),
+      radial-gradient(circle at 92% 80%, rgba(120,80,20,0.08) 0 6px, transparent 7px),
+      radial-gradient(circle at 70% 18%, rgba(120,80,20,0.06) 0 3px, transparent 4px);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  .thesis-paper .paper-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(28,26,20,0.18);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(28,26,20,0.55);
+  }
+  .thesis-paper .paper-stamp {
+    border: 1.5px solid #a83232;
+    color: #a83232;
+    padding: 5px 10px;
+    letter-spacing: 0.3em;
+    font-weight: 700;
+    transform: rotate(-3deg);
+  }
+  .thesis-paper h3 {
+    font-family: "Hanken Grotesk", serif;
+    font-weight: 700;
+    font-size: clamp(22px, 2.4vw, 32px);
+    line-height: 1.1;
+    margin: 0 0 22px;
+    letter-spacing: -0.01em;
+    color: #1c1a14;
+  }
+  .thesis-paper p {
+    font-family: "Hanken Grotesk", serif;
+    font-size: clamp(15px, 1.15vw, 17px);
+    line-height: 1.65;
+    color: #2a261c;
+    margin: 0 0 14px;
+  }
+  .thesis-paper p em {
+    font-style: italic;
+    color: #6a2020;
+    font-weight: 600;
+  }
+  .thesis-paper .paper-sig {
+    margin-top: 28px;
+    font-family: "Hanken Grotesk", cursive;
+    font-style: italic;
+    font-size: 22px;
+    color: #1c1a14;
+    transform: rotate(-1.5deg);
+    display: inline-block;
+  }
+  .thesis-paper .paper-sig-line {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(28,26,20,0.55);
+    margin-top: 4px;
+    font-style: normal;
+    transform: none;
+    display: block;
+  }
+
+  /* Interactive arena on the right */
+  .thesis-arena {
+    position: relative;
+    min-height: 520px;
+    border-radius: 2px;
+    overflow: hidden;
+    background:
+      radial-gradient(80% 60% at 50% 100%, #1a1e26 0%, transparent 65%),
+      radial-gradient(60% 50% at 50% 0%, rgba(80,40,40,0.15), transparent 60%),
+      linear-gradient(180deg, #04060a 0%, #0a0d13 60%, #05070a 100%);
+    border: 1px solid var(--rule);
+    cursor: crosshair;
+    user-select: none;
+  }
+  .arena-stars {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, #fff 100%, transparent),
+      radial-gradient(1px 1px at 28% 32%, #fff 100%, transparent),
+      radial-gradient(1px 1px at 44% 12%, #fff 100%, transparent),
+      radial-gradient(1px 1px at 62% 26%, #fff 100%, transparent),
+      radial-gradient(1px 1px at 78% 8%,  #fff 100%, transparent),
+      radial-gradient(1px 1px at 88% 40%, #fff 100%, transparent),
+      radial-gradient(1px 1px at 16% 48%, #fff 100%, transparent),
+      radial-gradient(1px 1px at 70% 56%, #fff 100%, transparent);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .arena-ground {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 22%;
+    background:
+      linear-gradient(180deg, transparent 0%, #06080b 60%, #02030a 100%);
+    pointer-events: none;
+  }
+  .arena-ground::before {
+    content: "";
+    position: absolute; left: 0; right: 0; top: 6%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rule-strong), transparent);
+  }
+  .arena-tower {
+    position: absolute;
+    left: 50%; bottom: 4%;
+    width: 80px; height: 160px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 4;
+  }
+  .arena-tower svg { width: 100%; height: 100%; overflow: visible; }
+  .arena-tower .turret {
+    transform-origin: 40px 70px;
+    transition: transform .25s cubic-bezier(.2,.7,.2,1);
+  }
+  .arena-drone {
+    position: absolute;
+    width: var(--w, 56px);
+    color: #c9c5bb;
+    cursor: pointer;
+    z-index: 3;
+    transition: transform .15s ease, opacity .25s ease, filter .2s ease;
+    animation: arenaDroneFloat var(--float, 5s) ease-in-out infinite;
+    will-change: transform;
+  }
+  .arena-drone:hover { color: var(--laser); filter: drop-shadow(0 0 8px var(--laser-glow)); }
+  .arena-drone.destroyed { opacity: 0; transform: scale(0.4) rotate(20deg); }
+  .arena-drone svg { width: 100%; height: auto; display: block; }
+  @keyframes arenaDroneFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+  .arena-laser {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255,42,42,0), #ff2a2a 20%, #fff 50%, #ff2a2a 80%, rgba(255,42,42,0));
+    transform-origin: 0 50%;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow: 0 0 10px rgba(255,42,42,0.9), 0 0 24px rgba(255,42,42,0.6);
+    z-index: 5;
+  }
+  .arena-laser.fire { animation: arenaLaserFire .55s ease-out forwards; }
+  @keyframes arenaLaserFire {
+    0%   { opacity: 0; height: 1px; }
+    15%  { opacity: 1; height: 3px; }
+    100% { opacity: 0; height: 1px; }
+  }
+  .arena-flash {
+    position: absolute;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: radial-gradient(circle, rgba(255,200,120,1) 0%, rgba(255,90,40,0.7) 30%, rgba(255,42,42,0) 70%);
+    pointer-events: none;
+    z-index: 6;
+  }
+  .arena-flash.pop { animation: arenaFlashPop .5s ease-out forwards; }
+  @keyframes arenaFlashPop {
+    0%   { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(3); opacity: 0; }
+  }
+  .arena-hud {
+    position: absolute;
+    top: 14px; left: 14px; right: 14px;
+    display: flex; justify-content: space-between;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+    z-index: 7;
+    pointer-events: none;
+  }
+  .arena-hud .score {
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .arena-hint {
+    position: absolute;
+    left: 50%; bottom: 14px;
+    transform: translateX(-50%);
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+    z-index: 7; pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .pull-quote {
+    margin: clamp(60px, 12vh, 140px) 0 0;
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.6vw, 56px);
+    line-height: 1.15;
+    color: var(--ink);
+    max-width: 30ch;
+    letter-spacing: -0.01em;
+  }
+  .pull-quote em { font-style: italic; }
+  .pull-quote .cite {
+    display: block;
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 24px;
+    font-weight: 500;
+  }
+
+  /* ───────── SUITE / PRODUCT REVEAL ───────── */
+  .suite {
+    padding: 0;
+    border-top: 1px solid var(--rule);
+    background: #050608;
+  }
+  .suite-drones {
+    position: relative;
+    width: 100%;
+    height: clamp(420px, 70vh, 720px);
+    overflow: hidden;
+    background:
+      radial-gradient(120% 80% at 50% 110%, #14181d 0%, transparent 60%),
+      linear-gradient(180deg, #2a2e34 0%, #1c1f24 45%, #0d0f12 100%);
+  }
+  .suite-skyline {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 38%;
+    pointer-events: none;
+  }
+  .suite-skyline svg { width: 100%; height: 100%; display: block; }
+  .suite-haze {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(8,10,14,0.35) 60%, rgba(5,6,8,0.92) 100%),
+      radial-gradient(60% 50% at 50% 60%, rgba(255,255,255,0.04), transparent 70%);
+    pointer-events: none;
+  }
+  .suite-drones .drone {
+    position: absolute;
+    top: var(--y, 30%);
+    right: 100%;
+    width: var(--size, 56px);
+    height: auto;
+    color: #0a0c10;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.45));
+    opacity: 0;
+    transform: translateX(0);
+  }
+  .suite-drones.drones-on .drone {
+    animation:
+      droneFlyIn var(--dur, 2.6s) cubic-bezier(.2,.7,.2,1) var(--delay, 0s) forwards,
+      droneBob 3.4s ease-in-out calc(var(--delay, 0s) + var(--dur, 2.6s)) infinite;
+  }
+  @keyframes droneFlyIn {
+    0%   { opacity: 0; transform: translate(0, 0); }
+    8%   { opacity: 1; }
+    100% { opacity: 1; transform: translate(var(--end-x, -60vw), 0); }
+  }
+  @keyframes droneBob {
+    0%, 100% { transform: translate(var(--end-x, -60vw), 0); }
+    50%      { transform: translate(var(--end-x, -60vw), -6px); }
+  }
+  .suite-intro {
+    position: absolute; inset: 0;
+    padding: clamp(40px, 8vh, 96px) var(--pad);
+    display: flex; flex-direction: column; justify-content: space-between;
+    pointer-events: none;
+  }
+  .suite-intro > * { pointer-events: auto; }
+  .suite-top-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .suite-headrow {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 40px;
+    align-items: end;
+  }
+  .suite-lead {
+    max-width: 38ch;
+    font-size: clamp(18px, 1.6vw, 24px);
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.25;
+  }
+  .suite-title {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(48px, 7vw, 108px);
+    line-height: 0.92;
+    color: var(--ink);
+    letter-spacing: -0.04em;
+    margin: 0;
+    text-align: right;
+    text-transform: uppercase;
+  }
+  @media (max-width: 760px) {
+    .suite-headrow { grid-template-columns: 1fr; gap: 18px; }
+    .suite-title { text-align: left; }
+  }
+
+  /* Suite cards grid */
+  .suite-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding: clamp(40px, 6vh, 72px) var(--pad) 0;
+    border-top: 1px solid var(--laser);
+  }
+  .suite-card {
+    padding: 22px 22px 28px;
+    border-right: 1px solid var(--rule);
+    display: flex; flex-direction: column;
+  }
+  .suite-card:last-child { border-right: none; }
+  .card-art {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    margin: -22px -22px 18px;
+    background: linear-gradient(180deg, #1a1d22 0%, #0c0e12 100%);
+    overflow: hidden;
+  }
+  .card-art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .suite-card h3 {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: clamp(20px, 1.6vw, 24px);
+    color: var(--ink);
+    margin: 6px 0 10px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .suite-card p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--body);
+  }
+  .suite-foot-meta {
+    display: flex; justify-content: space-between;
+    padding: clamp(40px, 5vh, 64px) var(--pad) clamp(40px, 6vh, 72px);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  @media (max-width: 960px) {
+    .suite-grid { grid-template-columns: repeat(2, 1fr); }
+    .suite-card:nth-child(2) { border-right: none; }
+    .suite-card:nth-child(1), .suite-card:nth-child(2) { border-bottom: 1px solid var(--rule); }
+  }
+  @media (max-width: 560px) {
+    .suite-grid { grid-template-columns: 1fr; }
+    .suite-card { border-right: none; border-bottom: 1px solid var(--rule); }
+    .suite-card:last-child { border-bottom: none; }
+  }
+
+  /* ───────── CAPABILITIES ───────── */
+  .caps .s-head { margin-bottom: 60px; }
+  .caps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+  .cap {
+    padding: 36px 28px 32px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    display: flex; flex-direction: column; gap: 10px;
+    min-height: 200px;
+    position: relative;
+  }
+  .cap .k {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .cap .v {
+    font-family: var(--serif);
+    font-size: clamp(34px, 3.4vw, 46px);
+    line-height: 1.02;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    margin-top: auto;
+  }
+  .cap .v small {
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0;
+    color: var(--body);
+    margin-left: 4px;
+    font-weight: 400;
+  }
+  .cap .v em { font-style: italic; color: var(--ink); }
+  .cap .desc {
+    font-size: 13px;
+    color: var(--body);
+    line-height: 1.5;
+    max-width: 28ch;
+  }
+  @media (max-width: 1024px) { .caps-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px)  { .caps-grid { grid-template-columns: 1fr; } }
+
+  /* ───────── DOMAINS ───────── */
+  .domains .s-headline { max-width: 18ch; }
+  .domain-rows {
+    border-top: 1px solid var(--rule);
+  }
+  .domain {
+    display: grid;
+    grid-template-columns: 80px 1fr 1.4fr 220px;
+    gap: 40px;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: center;
+    transition: background .3s ease, padding .3s ease;
+    cursor: pointer;
+  }
+  .domain:hover {
+    background: rgba(241,236,221,0.025);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .domain .idx {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--muted);
+    font-size: 20px;
+  }
+  .domain .title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3vw, 44px);
+    line-height: 1.02;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .domain .desc {
+    font-size: 15px;
+    color: var(--body);
+    line-height: 1.55;
+    max-width: 50ch;
+  }
+  .domain .tag {
+    justify-self: end;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .domain .tag svg {
+    width: 16px; height: 16px;
+    transition: transform .25s ease;
+  }
+  .domain:hover .tag svg { transform: translateX(4px); color: var(--ink); }
+  .domain:hover .tag { color: var(--ink); }
+  @media (max-width: 1024px) {
+    .domain { grid-template-columns: 50px 1fr; }
+    .domain .desc, .domain .tag { grid-column: 2; }
+    .domain .idx { grid-row: span 3; }
+  }
+
+  /* ───────── DOCTRINE / SENSE DECIDE ACT ───────── */
+  .doctrine {
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(255,42,42,0.04) 0%, transparent 60%),
+      var(--bg);
+  }
+  .doctrine .s-headline { max-width: 16ch; }
+  .doctrine-flow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .step {
+    background: var(--bg);
+    padding: 44px 36px 48px;
+    display: flex; flex-direction: column;
+    min-height: 360px;
+    position: relative;
+  }
+  .step .step-head {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 28px;
+  }
+  .step .step-num {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 28px;
+    color: var(--muted);
+  }
+  .step .step-title {
+    font-family: var(--serif);
+    font-size: clamp(40px, 4vw, 56px);
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .step .step-viz {
+    flex: 1;
+    margin: 16px 0 22px;
+    position: relative;
+    border: 1px solid var(--rule);
+    background: radial-gradient(60% 80% at 50% 50%, rgba(241,236,221,0.03) 0%, transparent 70%);
+    overflow: hidden;
+    min-height: 140px;
+  }
+  .step p {
+    color: var(--body);
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 38ch;
+  }
+  .step .pillar {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--laser);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  /* sense viz: radar sweep */
+  .viz-radar {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .viz-radar .ring {
+    position: absolute;
+    border: 1px solid var(--rule-strong);
+    border-radius: 50%;
+  }
+  .viz-radar .r1 { width: 30%; height: 0; padding-bottom: 30%; }
+  .viz-radar .r2 { width: 55%; height: 0; padding-bottom: 55%; }
+  .viz-radar .r3 { width: 80%; height: 0; padding-bottom: 80%; }
+  .viz-radar .sweep {
+    position: absolute;
+    width: 50%; height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--laser) 100%);
+    transform-origin: left center;
+    left: 50%;
+    animation: sweep 4s linear infinite;
+    box-shadow: 0 0 8px var(--laser-glow);
+  }
+  .viz-radar .blip {
+    position: absolute;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--laser);
+    box-shadow: 0 0 10px var(--laser-glow);
+  }
+  .viz-radar .b1 { left: 32%; top: 38%; animation: blink 4s infinite; }
+  .viz-radar .b2 { left: 64%; top: 56%; animation: blink 4s infinite 1.2s; }
+  .viz-radar .b3 { left: 56%; top: 30%; animation: blink 4s infinite 2.5s; }
+  @keyframes sweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes blink {
+    0%, 90%, 100% { opacity: 0; transform: scale(0.6); }
+    5%, 85% { opacity: 1; transform: scale(1); }
+  }
+
+  /* decide viz: branching */
+  .viz-decide {
+    position: absolute; inset: 0;
+    padding: 18px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .viz-decide svg { width: 100%; height: 100%; }
+  .viz-decide .node {
+    fill: var(--bg);
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+  }
+  .viz-decide .node.active { stroke: var(--laser); }
+  .viz-decide .node-label {
+    font-family: var(--sans);
+    font-size: 9px;
+    fill: var(--body);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .viz-decide .edge {
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+    fill: none;
+  }
+  .viz-decide .edge.active { stroke: var(--laser); }
+
+  /* act viz: laser beam */
+  .viz-act {
+    position: absolute; inset: 0;
+    overflow: hidden;
+  }
+  .viz-act .ground {
+    position: absolute; left: 18%; bottom: 26%;
+    width: 22px; height: 30px;
+    background: var(--ink-2);
+    clip-path: polygon(20% 100%, 80% 100%, 70% 30%, 50% 0%, 30% 30%);
+    opacity: 0.9;
+  }
+  .viz-act .target {
+    position: absolute; right: 14%; top: 18%;
+    width: 24px; height: 14px;
+    background: var(--muted);
+    clip-path: polygon(0 30%, 30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%);
+    animation: drift 6s ease-in-out infinite;
+  }
+  .viz-act .beam {
+    position: absolute;
+    left: 21%; top: 70%;
+    width: 70%; height: 1px;
+    transform-origin: left center;
+    transform: rotate(-32deg);
+    background: linear-gradient(90deg, var(--laser) 0%, rgba(255,42,42,0.2) 100%);
+    box-shadow: 0 0 8px var(--laser-glow), 0 0 18px var(--laser-glow);
+    opacity: 0;
+    animation: fire 4s ease-in-out infinite;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate(0,0); }
+    50% { transform: translate(-12px, 8px); }
+  }
+  @keyframes fire {
+    0%, 30% { opacity: 0; }
+    35%, 65% { opacity: 1; }
+    70%, 100% { opacity: 0; }
+  }
+
+  @media (max-width: 880px) {
+    .doctrine-flow { grid-template-columns: 1fr; }
+  }
+
+  /* ───────── COMPETITION TABLE ───────── */
+  .compete .s-headline { max-width: 18ch; }
+  .compete-table {
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+  }
+  .compete-row {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(4, 1fr);
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: center;
+  }
+  .compete-row.head {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 16px 0;
+  }
+  .compete-row.head .arqus-h {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .compete-row .crit {
+    color: var(--body);
+    font-weight: 500;
+  }
+  .compete-row .cell {
+    color: var(--body);
+    font-size: 13px;
+  }
+  .compete-row .cell.arqus {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .compete-row .cell.arqus::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--laser);
+    box-shadow: 0 0 8px var(--laser-glow);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @media (max-width: 880px) {
+    .compete-row { grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; }
+    .compete-row.head { display: none; }
+    .compete-row .crit { grid-column: 1 / -1; font-family: var(--serif); font-size: 22px; color: var(--ink); padding-bottom: 8px; border-bottom: 1px solid var(--rule); margin-bottom: 8px; }
+    .compete-row .cell::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 4px;
+    }
+  }
+
+  /* ───────── TEAM ───────── */
+  .team .s-headline { max-width: 16ch; }
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .person {
+    background: var(--bg);
+    padding: 40px 32px 36px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .person .portrait {
+    aspect-ratio: 4 / 5;
+    background:
+      radial-gradient(80% 80% at 50% 30%, rgba(241,236,221,0.06) 0%, rgba(0,0,0,0.6) 70%),
+      #0a0a0a;
+    border: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .person .initials {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(80px, 8vw, 120px);
+    color: var(--ink);
+    opacity: 0.5;
+    letter-spacing: -0.04em;
+  }
+  .person .role {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .person .name {
+    font-family: var(--serif);
+    font-size: clamp(28px, 2.4vw, 36px);
+    color: var(--ink);
+    line-height: 1;
+    margin-top: -8px;
+    letter-spacing: -0.01em;
+  }
+  .person .name em { font-style: italic; }
+  .person .bio {
+    color: var(--body);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .person .creds {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+  @media (max-width: 880px) { .team-grid { grid-template-columns: 1fr; } }
+
+  /* ───────── TRACTION STRIP ───────── */
+  .traction {
+    padding: clamp(60px, 9vh, 100px) var(--pad);
+    border-top: 1px solid var(--rule);
+  }
+  .traction-rail {
+    display: flex; align-items: center;
+    gap: clamp(40px, 6vw, 80px);
+    flex-wrap: wrap;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .traction-rail span {
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .traction-rail span::before {
+    content: "";
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--muted);
+  }
+  .traction-rail .accent::before { background: var(--laser); box-shadow: 0 0 8px var(--laser-glow); }
+  .traction-rail .accent { color: var(--ink); }
+
+  /* ───────── FOOTER / CTA ───────── */
+  .cta-final {
+    position: relative;
+    padding: clamp(80px, 12vh, 160px) var(--pad) 60px;
+    border-top: 1px solid var(--rule);
+    overflow: hidden;
+  }
+  .cta-final::before {
+    content: "";
+    position: absolute; inset: auto 0 0 0; height: 60%;
+    background: radial-gradient(60% 100% at 50% 100%, rgba(255,42,42,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-final .display {
+    font-size: clamp(56px, 11vw, 200px);
+    line-height: 0.92;
+    text-align: center;
+    margin: 0 auto;
+    max-width: 14ch;
+  }
+  .cta-row {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+  }
+  .cta-row .left {
+    color: var(--body); font-size: 14px;
+    max-width: 36ch;
+  }
+  .cta-row .right {
+    text-align: right;
+    color: var(--body); font-size: 14px;
+  }
+  .cta-row .right a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--ink);
+  }
+  .cta-button {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 18px 28px 18px 32px;
+    border-radius: 100px;
+    background: var(--ink);
+    color: #0a0a0a;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: transform .2s, background .2s;
+  }
+  .cta-button:hover { background: #fff; transform: translateY(-1px); }
+  .cta-button svg { width: 18px; height: 18px; }
+  .footer-bottom {
+    margin-top: clamp(80px, 12vh, 140px);
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .footer-bottom .links { display: flex; gap: 28px; }
+  .footer-bottom .links a { text-decoration: none; }
+  .footer-bottom .links a:hover { color: var(--ink); }
+  @media (max-width: 760px) {
+    .cta-row { grid-template-columns: 1fr; text-align: left; }
+    .cta-row .right { text-align: left; }
+  }
+
+  /* ───────── Reveal animation ───────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal[data-d="100"] { transition-delay: .1s; }
+  .reveal[data-d="200"] { transition-delay: .2s; }
+  .reveal[data-d="300"] { transition-delay: .3s; }
+  .reveal[data-d="400"] { transition-delay: .4s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ───────── NAV ───────── -->
+<nav class="nav" id="nav">
+  <a href="#top" class="wordmark">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <!-- arqus mark: little satellite pixel glyph -->
+      <rect x="11" y="2" width="2" height="2"/>
+      <rect x="10" y="5" width="4" height="4"/>
+      <rect x="11" y="10" width="2" height="4"/>
+      <rect x="9" y="10" width="6" height="3"/>
+      <rect x="2" y="11" width="6" height="3"/>
+      <rect x="2" y="14" width="2" height="2"/>
+      <rect x="16" y="11" width="6" height="3"/>
+      <rect x="20" y="14" width="2" height="2"/>
+    </svg>
+    Arqus
+  </a>
+  <div class="nav-links">
+    <a href="#thesis">Thesis</a>
+    <a href="#suite">Suite</a>
+    <a href="#domains">Domains</a>
+    <a href="#team">Team</a>
+  </div>
+  <a href="mailto:contact@arqusaerospace.com" class="nav-cta">
+    Join us
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+</nav>
+
+<main id="top" data-screen-label="01 Landing">
+
+<!-- ───────── HERO ───────── -->
+<section class="hero" data-screen-label="Hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-satellite" aria-hidden="true">
+    <!-- Stylized satellite silhouette (placeholder until real image is dropped) -->
+    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#0a1530"/>
+          <stop offset="1" stop-color="#02060f"/>
+        </linearGradient>
+      </defs>
+      <g transform="translate(400,300) rotate(15)">
+        <!-- main body -->
+        <rect x="-30" y="-60" width="60" height="120" fill="#0a0a0a" stroke="#1a1a1a"/>
+        <rect x="-22" y="-50" width="44" height="20" fill="#1a1a1a"/>
+        <rect x="-22" y="-20" width="44" height="40" fill="#0e0e0e"/>
+        <!-- panels -->
+        <rect x="-220" y="-30" width="180" height="60" fill="url(#panel)" stroke="#0a0a0a"/>
+        <rect x="40" y="-30" width="180" height="60" fill="url(#panel)" stroke="#0a0a0a"/>
+        <g stroke="#06101f" stroke-width="0.5">
+          <line x1="-200" y1="-30" x2="-200" y2="30"/>
+          <line x1="-160" y1="-30" x2="-160" y2="30"/>
+          <line x1="-120" y1="-30" x2="-120" y2="30"/>
+          <line x1="-80" y1="-30" x2="-80" y2="30"/>
+          <line x1="80" y1="-30" x2="80" y2="30"/>
+          <line x1="120" y1="-30" x2="120" y2="30"/>
+          <line x1="160" y1="-30" x2="160" y2="30"/>
+          <line x1="200" y1="-30" x2="200" y2="30"/>
+        </g>
+        <!-- antenna -->
+        <line x1="0" y1="-60" x2="0" y2="-90" stroke="#222" stroke-width="2"/>
+        <circle cx="0" cy="-94" r="3" fill="#222"/>
+      </g>
+    </svg>
+  </div>
+  <div class="hero-vignette" aria-hidden="true"></div>
+
+  <h1 class="hero-headline display">Building the<br/>space <em>arsenal</em>.</h1>
+
+  <div class="hero-bottom">
+    <div></div>
+    <div class="hero-meta">
+      A European aerospace company. Based in Munich. For briefings, reach out at <a href="mailto:contact@arqusaerospace.com">contact@arqusaerospace.com</a>.
+      <br/>
+      <a class="join" href="mailto:contact@arqusaerospace.com">
+        Join us
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="scroll-cue">Scroll</div>
+</section>
+
+<!-- ───────── THESIS / PROBLEM ───────── -->
+<section class="s thesis" id="thesis" data-screen-label="02 Thesis">
+  <header class="s-head">
+    <div>
+      <span class="label">Thesis</span>
+      <div class="num" style="margin-top:14px">01 / The mission</div>
+    </div>
+    <h2 class="s-headline display reveal" style="max-width: 18ch;">Two hundred years ago, whoever controlled the seas controlled the world.</h2>
+  </header>
+
+  <div class="thesis-layout">
+    <article class="thesis-paper reveal" data-d="100">
+      <div class="paper-head">
+        <span>Memo · Arqus Aerospace</span>
+        <span class="paper-stamp">Confidential</span>
+      </div>
+      <h3>The Space Arsenal Thesis</h3>
+      <p>Two hundred years ago, whoever controlled the seas controlled trade, power, and the future. Fifty years ago, the same was true of airspace — the US spent roughly <em>$2 trillion</em> on air dominance because the alternative was losing.</p>
+      <p>Today, that high ground is moving to <em>orbit</em>, and almost nobody has noticed. The same physics now apply on the ground: cheap robotic swarms — air, sea, land — can saturate any defense built around expensive missiles.</p>
+      <p>Europe needs dominance in this final frontier. We are building the <em>space arsenal</em>: autonomous, directed-energy defense priced per intercept in cents, not millions.</p>
+      <div class="paper-sig">M. Meersman
+        <span class="paper-sig-line">Chief Executive · May 2026</span>
+      </div>
+    </article>
+
+    <div class="thesis-arena" id="thesisArena" aria-label="Click drones to destroy them with the Arqus laser tower">
+      <div class="arena-stars"></div>
+      <div class="arena-ground"></div>
+
+      <div class="arena-hud">
+        <span>Live · ARQUS-1 turret</span>
+        <span class="score">Intercepts: <span id="arenaScore">0</span></span>
+      </div>
+
+      <div class="arena-tower">
+        <svg viewBox="0 0 80 160" preserveAspectRatio="xMidYEnd meet">
+          <!-- base -->
+          <rect x="22" y="140" width="36" height="14" fill="#1a1e25"/>
+          <rect x="14" y="152" width="52" height="6" fill="#0e1117"/>
+          <!-- mast -->
+          <rect x="36" y="70" width="8" height="80" fill="#1a1e25"/>
+          <rect x="30" y="130" width="20" height="8" fill="#262b34"/>
+          <!-- turret head (rotated by JS) -->
+          <g class="turret">
+            <rect x="22" y="56" width="36" height="22" rx="3" fill="#22272f" stroke="#3a4150" stroke-width="0.8"/>
+            <rect x="24" y="60" width="32" height="6" fill="#0f1218"/>
+            <!-- barrel -->
+            <rect x="36" y="38" width="8" height="22" fill="#2a303a"/>
+            <rect x="34" y="34" width="12" height="6" rx="1.5" fill="#3a4150"/>
+            <!-- emitter -->
+            <circle cx="40" cy="34" r="2.4" fill="#ff2a2a"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── SUITE / PRODUCT ───────── -->
+<section class="suite" id="suite" data-screen-label="03 Suite">
+  <div class="suite-drones" aria-hidden="true">
+    <div class="suite-skyline">
+      <svg viewBox="0 0 1440 220" preserveAspectRatio="none">
+        <g fill="#06080b">
+          <rect x="0"    y="120" width="60"  height="100"/>
+          <rect x="55"   y="90"  width="40"  height="130"/>
+          <rect x="100"  y="140" width="80"  height="80"/>
+          <rect x="180"  y="70"  width="46"  height="150"/>
+          <rect x="222"  y="110" width="64"  height="110"/>
+          <rect x="290"  y="50"  width="36"  height="170"/>
+          <rect x="326"  y="100" width="74"  height="120"/>
+          <rect x="400"  y="80"  width="50"  height="140"/>
+          <rect x="450"  y="120" width="90"  height="100"/>
+          <rect x="540"  y="60"  width="44"  height="160"/>
+          <rect x="584"  y="100" width="80"  height="120"/>
+          <rect x="664"  y="40"  width="36"  height="180"/>
+          <rect x="700"  y="90"  width="70"  height="130"/>
+          <rect x="770"  y="120" width="64"  height="100"/>
+          <rect x="834"  y="70"  width="50"  height="150"/>
+          <rect x="884"  y="100" width="76"  height="120"/>
+          <rect x="960"  y="60"  width="44"  height="160"/>
+          <rect x="1004" y="110" width="80"  height="110"/>
+          <rect x="1084" y="80"  width="48"  height="140"/>
+          <rect x="1132" y="120" width="72"  height="100"/>
+          <rect x="1204" y="60"  width="40"  height="160"/>
+          <rect x="1244" y="110" width="80"  height="110"/>
+          <rect x="1324" y="90"  width="50"  height="130"/>
+          <rect x="1374" y="130" width="66"  height="90"/>
+        </g>
+        <g fill="#0a0d12">
+          <rect x="40"  y="160" width="120" height="60"/>
+          <rect x="240" y="170" width="160" height="50"/>
+          <rect x="500" y="150" width="220" height="70"/>
+          <rect x="820" y="160" width="180" height="60"/>
+          <rect x="1100" y="170" width="240" height="50"/>
+        </g>
+      </svg>
+    </div>
+    <div class="suite-haze"></div>
+
+    <svg class="drone" viewBox="0 0 100 60" style="--y:18%;--size:72px;--dur:2.6s;--delay:.05s;--end-x:-22vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:30%;--size:46px;--dur:3.1s;--delay:.35s;--end-x:-42vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:14%;--size:36px;--dur:3.4s;--delay:.55s;--end-x:-68vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:42%;--size:62px;--dur:2.9s;--delay:.7s;--end-x:-30vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:22%;--size:54px;--dur:3.0s;--delay:.95s;--end-x:-55vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:50%;--size:40px;--dur:3.3s;--delay:1.2s;--end-x:-72vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:34%;--size:32px;--dur:3.5s;--delay:1.45s;--end-x:-85vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:46%;--size:50px;--dur:3.1s;--delay:1.7s;--end-x:-45vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+    <svg class="drone" viewBox="0 0 100 60" style="--y:26%;--size:28px;--dur:3.6s;--delay:1.95s;--end-x:-92vw"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>
+
+    <div class="suite-intro">
+      <div class="suite-top-row">
+        <span>Page 03</span>
+        <span>May 2026</span>
+      </div>
+      <div class="suite-headrow">
+        <p class="suite-lead">Protecting our most valuable infrastructure: from ground to space. Autonomous, real-time operations.</p>
+        <h2 class="suite-title">The Arqus<br/>Suite</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="suite-grid">
+    <article class="suite-card reveal" data-d="100">
+      <div class="card-art">
+        <svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="infraSky" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#1c2128"/>
+              <stop offset="1" stop-color="#080a0d"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="150" fill="url(#infraSky)"/>
+          <rect y="115" width="200" height="35" fill="#0a0c0f"/>
+          <rect x="0"   y="100" width="40" height="15" fill="#11141a"/>
+          <rect x="50"  y="105" width="60" height="10" fill="#11141a"/>
+          <rect x="120" y="98"  width="50" height="17" fill="#11141a"/>
+          <rect x="170" y="108" width="30" height="7"  fill="#11141a"/>
+          <rect x="92" y="60" width="6" height="55" fill="#1f242c"/>
+          <rect x="86" y="58" width="18" height="6" fill="#262b34"/>
+          <line x1="95" y1="60" x2="160" y2="14" stroke="#ff2a2a" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="160" cy="14" r="2.5" fill="#ff2a2a"/>
+        </svg>
+      </div>
+      <h3>Critical Infrastructure</h3>
+      <p>Electricity grids, nuclear power plants, airports, harbours.</p>
+    </article>
+
+    <article class="suite-card reveal" data-d="200">
+      <div class="card-art">
+        <svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="terrSky" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#1c2128"/>
+              <stop offset="1" stop-color="#080a0d"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="150" fill="url(#terrSky)"/>
+          <rect y="120" width="200" height="30" fill="#0a0c0f"/>
+          <g transform="translate(60,84)">
+            <rect x="0" y="20" width="80" height="20" rx="2" fill="#1a1e25"/>
+            <rect x="6" y="14" width="50" height="10" fill="#222731"/>
+            <rect x="56" y="8" width="14" height="16" fill="#1a1e25"/>
+            <rect x="60" y="2"  width="3"  height="10" fill="#262b34"/>
+            <circle cx="14" cy="42" r="6" fill="#0a0c0f"/>
+            <circle cx="34" cy="42" r="6" fill="#0a0c0f"/>
+            <circle cx="62" cy="42" r="6" fill="#0a0c0f"/>
+          </g>
+          <line x1="124" y1="88" x2="180" y2="20" stroke="#ff2a2a" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="180" cy="20" r="2.5" fill="#ff2a2a"/>
+        </svg>
+      </div>
+      <h3>Terrestrial Platforms</h3>
+      <p>Manned or unmanned vehicles, tanks, UGVs, service vehicles.</p>
+    </article>
+
+    <article class="suite-card reveal" data-d="300">
+      <div class="card-art">
+        <svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="seaSky" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#1c2128"/>
+              <stop offset="1" stop-color="#080a0d"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="150" fill="url(#seaSky)"/>
+          <rect y="100" width="200" height="50" fill="#0c1014"/>
+          <g stroke="#161b21" stroke-width="0.6">
+            <line x1="0" y1="112" x2="200" y2="112"/>
+            <line x1="0" y1="124" x2="200" y2="124"/>
+            <line x1="0" y1="136" x2="200" y2="136"/>
+          </g>
+          <g transform="translate(50,76)">
+            <path d="M0 22 L100 22 L92 32 L8 32 Z" fill="#1a1e25"/>
+            <rect x="22" y="10" width="50" height="12" fill="#222731"/>
+            <rect x="36" y="2"  width="22" height="10" fill="#1a1e25"/>
+            <rect x="42" y="-4" width="3"  height="8" fill="#262b34"/>
+          </g>
+          <line x1="100" y1="76" x2="172" y2="14" stroke="#ff2a2a" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="172" cy="14" r="2.5" fill="#ff2a2a"/>
+        </svg>
+      </div>
+      <h3>Seaborn Platforms</h3>
+      <p>Ships, sea drones, oil platforms, and critical waterways.</p>
+    </article>
+
+    <article class="suite-card reveal" data-d="400">
+      <div class="card-art">
+        <svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="space" cx="50%" cy="50%" r="70%">
+              <stop offset="0" stop-color="#0a1530"/>
+              <stop offset="1" stop-color="#02040a"/>
+            </radialGradient>
+          </defs>
+          <rect width="200" height="150" fill="url(#space)"/>
+          <g fill="#fff" opacity="0.55">
+            <circle cx="20"  cy="22" r="0.8"/>
+            <circle cx="55"  cy="14" r="0.6"/>
+            <circle cx="120" cy="28" r="0.8"/>
+            <circle cx="160" cy="40" r="0.6"/>
+            <circle cx="180" cy="20" r="0.7"/>
+            <circle cx="38"  cy="60" r="0.5"/>
+            <circle cx="92"  cy="48" r="0.7"/>
+          </g>
+          <path d="M -40 200 A 240 240 0 0 1 240 200 Z" fill="#0e1620" stroke="#1b2838" stroke-width="0.8"/>
+          <g transform="translate(118,58) rotate(15)">
+            <rect x="-6" y="-8" width="12" height="16" fill="#1a1e25" stroke="#2a2f38" stroke-width="0.6"/>
+            <rect x="-22" y="-4" width="14" height="8" fill="#0e1530" stroke="#1a2540"/>
+            <rect x="8"   y="-4" width="14" height="8" fill="#0e1530" stroke="#1a2540"/>
+          </g>
+          <line x1="124" y1="62" x2="44" y2="20" stroke="#ff2a2a" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="44" cy="20" r="2.5" fill="#ff2a2a"/>
+        </svg>
+      </div>
+      <h3>Space Defence</h3>
+      <p>Dazzle hostile satellites, safeguard constellations, divert threats.</p>
+    </article>
+  </div>
+
+  <div class="suite-foot-meta">
+    <span>EUDIS Business Accelerator</span>
+    <span>Arqus</span>
+  </div>
+</section>
+
+<!-- ───────── DOMAINS ───────── -->
+<section class="s domains" id="domains" data-screen-label="05 Domains">
+  <header class="s-head">
+    <div>
+      <span class="label">Domains</span>
+      <div class="num" style="margin-top:14px">03 / From ground to space</div>
+    </div>
+    <h2 class="s-headline display reveal">Protecting our most valuable infrastructure.</h2>
+  </header>
+
+  <div class="domain-rows">
+    <div class="domain reveal" data-d="100">
+      <div class="idx">i.</div>
+      <div class="title display">Critical infrastructure</div>
+      <div class="desc">Airports, harbours, nuclear plants, electricity grids. Persistent overwatch where downtime is measured in lives, not minutes.</div>
+      <div class="tag">
+        Ground
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+    <div class="domain reveal" data-d="150">
+      <div class="idx">ii.</div>
+      <div class="title display">Terrestrial platforms</div>
+      <div class="desc">Manned and unmanned vehicles, tanks, UGVs, service fleets. Plug-and-protect for anything that moves on land.</div>
+      <div class="tag">
+        Mobile
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+    <div class="domain reveal" data-d="200">
+      <div class="idx">iii.</div>
+      <div class="title display">Seaborne platforms</div>
+      <div class="desc">Ships, sea drones, oil platforms, critical waterways. A close-in layer against swarming hostile UAS and USVs.</div>
+      <div class="tag">
+        Maritime
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+    <div class="domain reveal" data-d="250">
+      <div class="idx">iv.</div>
+      <div class="title display"><em>Space defense</em></div>
+      <div class="desc">Dazzle hostile satellites, safeguard constellations, divert threats. A mutual defense shell across an orbital plane.</div>
+      <div class="tag">
+        Orbital
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── DOCTRINE / SENSE • DECIDE • ACT ───────── -->
+<section class="s doctrine" id="doctrine" data-screen-label="06 Doctrine">
+  <header class="s-head">
+    <div>
+      <span class="label">Doctrine</span>
+      <div class="num" style="margin-top:14px">04 / Working principle</div>
+    </div>
+    <h2 class="s-headline display reveal">A closed loop, <em>at the edge</em>.</h2>
+  </header>
+
+  <div class="doctrine-flow">
+    <div class="step reveal" data-d="100">
+      <div class="pillar">01 — Sense</div>
+      <div class="step-head">
+        <span class="step-title">Sense.</span>
+      </div>
+      <div class="step-viz">
+        <div class="viz-radar">
+          <div class="ring r1"></div>
+          <div class="ring r2"></div>
+          <div class="ring r3"></div>
+          <div class="sweep"></div>
+          <div class="blip b1"></div>
+          <div class="blip b2"></div>
+          <div class="blip b3"></div>
+        </div>
+      </div>
+      <p>Situational-awareness sensors analyse the environment in real time. Tracking happens on-device, with no dependence on a ground link.</p>
+    </div>
+
+    <div class="step reveal" data-d="200">
+      <div class="pillar">02 — Decide</div>
+      <div class="step-head">
+        <span class="step-title">Decide.</span>
+      </div>
+      <div class="step-viz">
+        <div class="viz-decide">
+          <svg viewBox="0 0 200 120">
+            <path class="edge active" d="M30 60 L80 30"/>
+            <path class="edge" d="M30 60 L80 60"/>
+            <path class="edge" d="M30 60 L80 90"/>
+            <path class="edge active" d="M80 30 L150 30"/>
+            <path class="edge" d="M80 60 L150 60"/>
+            <path class="edge" d="M80 90 L150 90"/>
+            <circle class="node active" cx="30" cy="60" r="5"/>
+            <circle class="node active" cx="80" cy="30" r="4"/>
+            <circle class="node" cx="80" cy="60" r="4"/>
+            <circle class="node" cx="80" cy="90" r="4"/>
+            <circle class="node active" cx="150" cy="30" r="5"/>
+            <circle class="node" cx="150" cy="60" r="4"/>
+            <circle class="node" cx="150" cy="90" r="4"/>
+            <text class="node-label" x="155" y="34">Engage</text>
+            <text class="node-label" x="155" y="64">Track</text>
+            <text class="node-label" x="155" y="94">Ignore</text>
+          </svg>
+        </div>
+      </div>
+      <p>An on-board edge-AI neural engine characterises the threat and selects an action — sub-millisecond, with no operator in the loop for dazzling.</p>
+    </div>
+
+    <div class="step reveal" data-d="300">
+      <div class="pillar">03 — Act</div>
+      <div class="step-head">
+        <span class="step-title">Act.</span>
+      </div>
+      <div class="step-viz">
+        <div class="viz-act">
+          <div class="target"></div>
+          <div class="ground"></div>
+          <div class="beam"></div>
+        </div>
+      </div>
+      <p>An ultra-fast scan pattern delivers maximum power on every pass — dazzling first, destruction on operator confirmation. Designed for multi-target engagement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── COMPETITION ───────── -->
+<section class="s compete" id="compete" data-screen-label="07 Why Arqus">
+  <header class="s-head">
+    <div>
+      <span class="label">Why Arqus</span>
+      <div class="num" style="margin-top:14px">05 / The only plug-and-protect</div>
+    </div>
+    <h2 class="s-headline display reveal">Defensive payload against <em>swarms</em>.</h2>
+  </header>
+
+  <div class="compete-table">
+    <div class="compete-row head">
+      <div></div>
+      <div class="arqus-h">Arqus Suite</div>
+      <div>High-power lasers</div>
+      <div>Interceptors</div>
+      <div>RF Jamming</div>
+    </div>
+    <div class="compete-row reveal" data-d="100">
+      <div class="crit">Action</div>
+      <div class="cell arqus" data-label="Arqus">Dazzle &amp; destroy</div>
+      <div class="cell" data-label="Lasers">Melt the target</div>
+      <div class="cell" data-label="Interceptors">Kinetic kill</div>
+      <div class="cell" data-label="Jamming">Jam RF only</div>
+    </div>
+    <div class="compete-row reveal" data-d="150">
+      <div class="crit">Response time</div>
+      <div class="cell arqus" data-label="Arqus">~ms</div>
+      <div class="cell" data-label="Lasers">Seconds</div>
+      <div class="cell" data-label="Interceptors">Minutes</div>
+      <div class="cell" data-label="Jamming">Seconds</div>
+    </div>
+    <div class="compete-row reveal" data-d="200">
+      <div class="crit">Cost per shot</div>
+      <div class="cell arqus" data-label="Arqus">&lt;€0.10</div>
+      <div class="cell" data-label="Lasers">~€1</div>
+      <div class="cell" data-label="Interceptors">€400+</div>
+      <div class="cell" data-label="Jamming">—</div>
+    </div>
+    <div class="compete-row reveal" data-d="250">
+      <div class="crit">Form factor</div>
+      <div class="cell arqus" data-label="Arqus">Small, low power</div>
+      <div class="cell" data-label="Lasers">EU-pallet, high power</div>
+      <div class="cell" data-label="Interceptors">Custom launch pods</div>
+      <div class="cell" data-label="Jamming">Bulky, high power</div>
+    </div>
+    <div class="compete-row reveal" data-d="300">
+      <div class="crit">Autonomy</div>
+      <div class="cell arqus" data-label="Arqus">Full on-board</div>
+      <div class="cell" data-label="Lasers">Manual</div>
+      <div class="cell" data-label="Interceptors">Manual reload</div>
+      <div class="cell" data-label="Jamming">Manual tune</div>
+    </div>
+    <div class="compete-row reveal" data-d="350">
+      <div class="crit">Magazine</div>
+      <div class="cell arqus" data-label="Arqus">Unlimited</div>
+      <div class="cell" data-label="Lasers">Power-bound</div>
+      <div class="cell" data-label="Interceptors">1 per target</div>
+      <div class="cell" data-label="Jamming">N/A</div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── TEAM ───────── -->
+<section class="s team" id="team" data-screen-label="08 Team">
+  <header class="s-head">
+    <div>
+      <span class="label">Team</span>
+      <div class="num" style="margin-top:14px">06 / Operators</div>
+    </div>
+    <h2 class="s-headline display reveal">We come from space and defense — and <em>left to build this</em>.</h2>
+  </header>
+
+  <div class="team-grid">
+    <div class="person reveal" data-d="100">
+      <div class="portrait"><span class="initials">M.</span></div>
+      <div class="role">Chief executive</div>
+      <div class="name display">Marnix <em>Meersman</em></div>
+      <div class="bio">Managed R&amp;D for ESA’s Galileo and IRIS² defense constellations. Co-built the world’s fastest H₂ race car.</div>
+      <div class="creds">TU Delft · Harvard Entrepreneurship</div>
+    </div>
+    <div class="person reveal" data-d="200">
+      <div class="portrait"><span class="initials">A.</span></div>
+      <div class="role">Chief operating</div>
+      <div class="name display">Anton <em>Liegert</em></div>
+      <div class="bio">Five years across the space industry in Germany, England, and Japan. Built ESA’s internal incubator from zero.</div>
+      <div class="creds">TU Dresden · ESB Business School</div>
+    </div>
+    <div class="person reveal" data-d="300">
+      <div class="portrait"><span class="initials">S.</span></div>
+      <div class="role">Chief technology</div>
+      <div class="name display">Stijn <em>Lafontaine</em></div>
+      <div class="bio">Built autonomous defense boats, drones, and offshore robotic systems. Autonomy, swarms, physical AI.</div>
+      <div class="creds">TU Delft · Robotics Engineer</div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── TRACTION ───────── -->
+<section class="traction" data-screen-label="09 Traction">
+  <div class="traction-rail">
+    <span class="accent">TRL 5 achieved</span>
+    <span>Pre-seed raised</span>
+    <span>EUDIS Defence Hackathon winners</span>
+    <span>TUM Venture Labs</span>
+    <span>Tytan Technologies demo</span>
+    <span>Dutch NLR partnership</span>
+    <span>TIE26 NATO exercise</span>
+    <span class="accent">In TEB for ESA BIC</span>
+  </div>
+</section>
+
+<!-- ───────── FOOTER / CTA ───────── -->
+<section class="cta-final" data-screen-label="10 CTA">
+  <h2 class="display reveal">We secure <em>air-space</em>, together.</h2>
+  <div class="cta-row reveal" data-d="200">
+    <div class="left">A European aerospace company. Based in Munich. For briefings, demos, and partnerships — reach out directly.</div>
+    <a class="cta-button" href="mailto:contact@arqusaerospace.com">
+      contact@arqusaerospace.com
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <div class="right">+31 612 310 062<br/><a href="https://www.arqusaerospace.com">www.arqusaerospace.com</a></div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 Arqus Aerospace · Munich</div>
+    <div class="links">
+      <a href="#thesis">Thesis</a>
+      <a href="#suite">Suite</a>
+      <a href="#team">Team</a>
+      <a href="mailto:contact@arqusaerospace.com">Contact</a>
+    </div>
+    <div>EUDIS · ESA · TUM Venture Labs</div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  // Scrolled-state navbar
+  const nav = document.getElementById('nav');
+  const onScroll = () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Reveal-on-scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    }
+  }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+  reveals.forEach(el => io.observe(el));
+
+  // Fallback: if an element is already in viewport on load (or after a beat),
+  // reveal it immediately. Also catch anything still hidden after 2s.
+  requestAnimationFrame(() => {
+    reveals.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('in');
+    });
+  });
+  setTimeout(() => reveals.forEach(el => el.classList.add('in')), 2200);
+
+  // Drone swarm: trigger fly-in when the suite section scrolls into view
+  const droneStage = document.querySelector('.suite-drones');
+  if (droneStage) {
+    const dio = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          droneStage.classList.add('drones-on');
+          dio.unobserve(e.target);
+        }
+      }
+    }, { threshold: 0.25 });
+    dio.observe(droneStage);
+  }
+
+  // Thesis arena: laser tower vs. drones (interactive)
+  (function thesisArena() {
+    const arena = document.getElementById('thesisArena');
+    if (!arena) return;
+    const tower = arena.querySelector('.arena-tower');
+    const turret = arena.querySelector('.arena-tower .turret');
+    const scoreEl = document.getElementById('arenaScore');
+    let score = 0;
+
+    const DRONE_SVG = '<svg viewBox="0 0 100 60" aria-hidden="true"><g fill="currentColor"><circle cx="14" cy="14" r="9"/><circle cx="86" cy="14" r="9"/><circle cx="14" cy="46" r="9"/><circle cx="86" cy="46" r="9"/><rect x="38" y="22" width="24" height="16" rx="2"/><path d="M22 18 L40 26 M78 18 L60 26 M22 42 L40 34 M78 42 L60 34" stroke="currentColor" stroke-width="3" fill="none"/></g></svg>';
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    function spawnDrone() {
+      const d = document.createElement('div');
+      d.className = 'arena-drone';
+      d.innerHTML = DRONE_SVG;
+      const w = rand(36, 64);
+      d.style.setProperty('--w', w + 'px');
+      d.style.setProperty('--float', rand(4, 7) + 's');
+      d.style.left = rand(6, 88) + '%';
+      d.style.top = rand(10, 55) + '%';
+      d.style.animationDelay = (-rand(0, 5)) + 's';
+      d.addEventListener('click', (e) => {
+        e.stopPropagation();
+        destroyDrone(d);
+      });
+      arena.appendChild(d);
+      return d;
+    }
+
+    function destroyDrone(d) {
+      if (d.classList.contains('destroyed')) return;
+      const arenaRect = arena.getBoundingClientRect();
+      const droneRect = d.getBoundingClientRect();
+      const towerRect = tower.getBoundingClientRect();
+
+      // turret pivot point (approx. emitter location)
+      const ox = towerRect.left + towerRect.width / 2 - arenaRect.left;
+      const oy = towerRect.top + towerRect.height * 0.42 - arenaRect.top;
+      const tx = droneRect.left + droneRect.width / 2 - arenaRect.left;
+      const ty = droneRect.top + droneRect.height / 2 - arenaRect.top;
+
+      const dx = tx - ox, dy = ty - oy;
+      const dist = Math.hypot(dx, dy);
+      const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+
+      // aim turret (default barrel points up → angle - 90)
+      turret.style.transform = `rotate(${angleDeg + 90}deg)`;
+
+      // fire laser
+      const laser = document.createElement('div');
+      laser.className = 'arena-laser fire';
+      laser.style.left = ox + 'px';
+      laser.style.top  = oy + 'px';
+      laser.style.width = dist + 'px';
+      laser.style.transform = `rotate(${angleDeg}deg)`;
+      arena.appendChild(laser);
+      laser.addEventListener('animationend', () => laser.remove());
+
+      // explosion flash at drone
+      const flash = document.createElement('div');
+      flash.className = 'arena-flash pop';
+      flash.style.left = tx + 'px';
+      flash.style.top  = ty + 'px';
+      arena.appendChild(flash);
+      flash.addEventListener('animationend', () => flash.remove());
+
+      // destroy & respawn
+      setTimeout(() => {
+        d.classList.add('destroyed');
+        score += 1;
+        if (scoreEl) scoreEl.textContent = score;
+        setTimeout(() => {
+          d.remove();
+          spawnDrone();
+        }, 700);
+      }, 120);
+    }
+
+    // turret tracks the cursor when no shot is firing
+    let trackTimer;
+    arena.addEventListener('mousemove', (e) => {
+      const arenaRect = arena.getBoundingClientRect();
+      const towerRect = tower.getBoundingClientRect();
+      const ox = towerRect.left + towerRect.width / 2 - arenaRect.left;
+      const oy = towerRect.top + towerRect.height * 0.42 - arenaRect.top;
+      const tx = e.clientX - arenaRect.left;
+      const ty = e.clientY - arenaRect.top;
+      const angleDeg = Math.atan2(ty - oy, tx - ox) * 180 / Math.PI;
+      turret.style.transform = `rotate(${angleDeg + 90}deg)`;
+      clearTimeout(trackTimer);
+    });
+
+    // initial swarm
+    for (let i = 0; i < 5; i++) spawnDrone();
+  })();
+</script>
+
+</body>
+</html>
