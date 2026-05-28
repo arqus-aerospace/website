@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 function WordsPullUp({
@@ -50,12 +48,14 @@ export default function Hero({ onBriefing }: { onBriefing: () => void }) {
           aria-hidden="true"
         />
         <div className="arq-hero__noise" aria-hidden="true" />
+        <div className="arq-hero__blur" aria-hidden="true" />
         <div className="arq-hero__scrim" aria-hidden="true" />
 
-        <nav className="arq-navpill">
-          <Link className="arq-navpill__link" href="/thesis">
-            Thesis
-          </Link>
+        <nav className="arq-navlinks" aria-label="Sections">
+          <a className="arq-navlinks__link" href="#thesis">Thesis</a>
+          <a className="arq-navlinks__link" href="#capabilities">Principle</a>
+          <a className="arq-navlinks__link" href="#suite">Suite</a>
+          <a className="arq-navlinks__link" href="#team">Team</a>
         </nav>
 
         <a
@@ -63,11 +63,7 @@ export default function Hero({ onBriefing }: { onBriefing: () => void }) {
           className="arq-mark"
           aria-label="Arqus Aerospace"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={`${BASE}/assets/arqus-wordmark-white-cropped.png`}
-            alt="Arqus"
-          />
+          Arqus
         </a>
 
         <div className="arq-hero__bottom">
@@ -75,13 +71,15 @@ export default function Hero({ onBriefing }: { onBriefing: () => void }) {
             <h1 className="arq-hero__title">
               <WordsPullUp text="Building the" baseDelay={0.15} />
               <br />
-              <WordsPullUp text="space" baseDelay={0.35} />{" "}
-              <span className="arq-pull__mask">
-                <span
-                  className="arq-pull__word arq-hero__title-italic"
-                  style={{ animationDelay: "0.45s" }}
-                >
-                  arsenal.
+              <span className="arq-hero__title-row">
+                <WordsPullUp text="space" baseDelay={0.35} />{" "}
+                <span className="arq-pull__mask">
+                  <span
+                    className="arq-pull__word arq-hero__title-italic"
+                    style={{ animationDelay: "0.45s" }}
+                  >
+                    arsenal.
+                  </span>
                 </span>
               </span>
             </h1>
