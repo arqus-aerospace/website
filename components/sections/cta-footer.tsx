@@ -1,6 +1,11 @@
+import Arena from "@/components/arena";
+
 export default function CtaFooter() {
   return (
     <section className="cta-final">
+      <div className="cta-final__bg" aria-hidden="true">
+        <Arena variant="background" forceMode="auto" droneCount={18} />
+      </div>
       <h2 className="display">
         Securing <em>air space</em>, together.
       </h2>

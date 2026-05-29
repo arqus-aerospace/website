@@ -5,7 +5,7 @@ import Hero from "@/components/hero";
 import BriefingModal from "@/components/briefing-modal";
 import ThesisPaperArena from "@/components/sections/thesis-paper-arena";
 import Suite from "@/components/sections/suite";
-import Domains from "@/components/sections/domains";
+import WorkingPrinciple from "@/components/sections/working-principle";
 import Careers from "@/components/sections/careers";
 import Partners from "@/components/sections/partners";
 import CtaFooter from "@/components/sections/cta-footer";
@@ -42,8 +42,8 @@ export default function Home() {
     <main>
       <Hero onBriefing={() => setModal(true)} />
       <ThesisPaperArena />
+      <WorkingPrinciple />
       <Suite />
-      <Domains />
       <Partners />
       <Careers />
       <CtaFooter />

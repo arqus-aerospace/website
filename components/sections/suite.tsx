@@ -205,7 +205,7 @@ export default function Suite() {
                 y1="60"
                 x2="160"
                 y2="14"
-                stroke="#F07427"
+                stroke="#E62630"
                 strokeWidth="1.4"
                 strokeLinecap="round"
               />
@@ -214,7 +214,7 @@ export default function Suite() {
                 cx="160"
                 cy="14"
                 r="2.5"
-                fill="#F07427"
+                fill="#E62630"
               />
               <circle
                 className="laser-flash"
@@ -270,7 +270,7 @@ export default function Suite() {
                 y1="88"
                 x2="180"
                 y2="20"
-                stroke="#F07427"
+                stroke="#E62630"
                 strokeWidth="1.4"
                 strokeLinecap="round"
               />
@@ -279,7 +279,7 @@ export default function Suite() {
                 cx="180"
                 cy="20"
                 r="2.5"
-                fill="#F07427"
+                fill="#E62630"
               />
               <circle
                 className="laser-flash"
@@ -332,7 +332,7 @@ export default function Suite() {
                 y1="76"
                 x2="172"
                 y2="14"
-                stroke="#F07427"
+                stroke="#E62630"
                 strokeWidth="1.4"
                 strokeLinecap="round"
               />
@@ -341,7 +341,7 @@ export default function Suite() {
                 cx="172"
                 cy="14"
                 r="2.5"
-                fill="#F07427"
+                fill="#E62630"
               />
               <circle
                 className="laser-flash"
@@ -425,7 +425,7 @@ export default function Suite() {
                 y1="62"
                 x2="44"
                 y2="20"
-                stroke="#F07427"
+                stroke="#E62630"
                 strokeWidth="1.4"
                 strokeLinecap="round"
               />
@@ -434,7 +434,7 @@ export default function Suite() {
                 cx="44"
                 cy="20"
                 r="2.5"
-                fill="#F07427"
+                fill="#E62630"
               />
               <circle
                 className="laser-flash"

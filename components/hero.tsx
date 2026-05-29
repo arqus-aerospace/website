@@ -48,12 +48,13 @@ export default function Hero({ onBriefing }: { onBriefing: () => void }) {
           aria-hidden="true"
         />
         <div className="arq-hero__noise" aria-hidden="true" />
+        <div className="arq-hero__blur" aria-hidden="true" />
         <div className="arq-hero__scrim" aria-hidden="true" />
 
         <nav className="arq-navlinks" aria-label="Sections">
           <a className="arq-navlinks__link" href="#thesis">Thesis</a>
+          <a className="arq-navlinks__link" href="#capabilities">Principle</a>
           <a className="arq-navlinks__link" href="#suite">Suite</a>
-          <a className="arq-navlinks__link" href="#domains">Domains</a>
           <a className="arq-navlinks__link" href="#team">Team</a>
         </nav>
 

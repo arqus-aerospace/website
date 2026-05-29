@@ -25,11 +25,11 @@
   --void-700: #0F1E36;
   --void-600: #142944;
 
-  --orange-700: #9A3812;
-  --orange-600: #C84B22;
-  --orange-500: #F07427;
-  --orange-400: #F58B44;
-  --orange-300: #F9A876;
+  --red-700: #8C1218;
+  --red-600: #BC1C24;
+  --red-500: #E62630;
+  --red-400: #EF5258;
+  --red-300: #F58E90;
 
   --bone: #E1E0CC;
 
@@ -53,7 +53,7 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: var(--orange-500); color: #fff; }
+::selection { background: var(--red-500); color: #fff; }
 
 /* ============================================================
    Hero — Prisma-style stealth landing
@@ -72,8 +72,7 @@ html, body {
 
 .arq-hero__photo {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; object-position: 22% 30%;
-  transform: scaleX(-1);
+  object-fit: cover; object-position: 78% 30%;
   filter: brightness(0.85) saturate(0.9) contrast(1.05);
 }
 .arq-hero__noise {
@@ -87,9 +86,23 @@ html, body {
     radial-gradient(1px 1px at 80% 70%, rgba(255,255,255,0.3), transparent 50%),
     radial-gradient(1px 1px at 45% 85%, rgba(255,255,255,0.25), transparent 50%);
 }
+/* Layered "shaders" over the video to make the text readable.
+   Top layer: corner vignette darkens the upper-left and lower edges.
+   Bottom layer: vertical scrim adds a soft fade from clear (top) to dark (bottom). */
 .arq-hero__scrim {
   position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, transparent 0%, transparent 65%, rgba(0,0,0,0.35) 100%);
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 90%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0) 75%),
+    linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 25%, transparent 55%, rgba(0,0,0,0.55) 100%);
+}
+/* Subtle localized blur behind just the bottom-left text region */
+.arq-hero__blur {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  backdrop-filter: blur(6px) brightness(0.95) saturate(0.9);
+  -webkit-backdrop-filter: blur(6px) brightness(0.95) saturate(0.9);
+  -webkit-mask-image: radial-gradient(ellipse 55% 45% at 18% 90%, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0) 80%);
+          mask-image: radial-gradient(ellipse 55% 45% at 18% 90%, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0) 80%);
 }
 
 /* Top-center nav row (Thesis · Suite · Domains · Team) */
@@ -104,13 +117,16 @@ html, body {
 .arq-navlinks__link {
   font-family: var(--font-sans);
   font-size: 14px;
-  color: rgba(225,224,204,0.78);
+  /* White + difference blend inverts the text against whatever the video
+     shows behind it, so links stay legible over both bright and dark areas. */
+  color: #fff;
+  mix-blend-mode: difference;
   text-decoration: none;
   letter-spacing: 0.01em;
-  transition: color 160ms var(--ease), opacity 160ms var(--ease);
+  transition: opacity 160ms var(--ease);
   opacity: 0.92;
 }
-.arq-navlinks__link:hover { color: var(--bone); opacity: 1; }
+.arq-navlinks__link:hover { opacity: 1; }
 @media (min-width: 768px) {
   .arq-navlinks { top: 34px; gap: 36px; }
   .arq-navlinks__link { font-size: 15px; }
@@ -134,7 +150,7 @@ html, body {
 }
 .arq-navpill__link::before {
   content: ""; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--orange-500); box-shadow: 0 0 8px var(--orange-500);
+  background: var(--red-500); box-shadow: 0 0 8px var(--red-500);
 }
 .arq-navpill__link:hover { color: var(--bone); }
 @media (min-width: 768px) { .arq-navpill__link { border-radius: 0 0 24px 24px; padding: 12px 28px; } }
@@ -148,7 +164,7 @@ html, body {
   font-size: 22px;
   line-height: 1;
   letter-spacing: -0.025em;
-  color: #ffffff;
+  color: var(--bone);
   text-decoration: none;
   opacity: 1;
   transition: opacity 160ms var(--ease);
@@ -159,10 +175,11 @@ html, body {
 /* Bottom-aligned grid */
 .arq-hero__bottom {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 10;
-  padding: 0 16px 0;
+  padding: 0 16px 0 6px;
 }
-@media (min-width: 640px) { .arq-hero__bottom { padding: 0 24px 0; } }
-@media (min-width: 768px) { .arq-hero__bottom { padding: 0 40px 0; } }
+@media (min-width: 640px) { .arq-hero__bottom { padding: 0 24px 0 10px; } }
+@media (min-width: 768px) { .arq-hero__bottom { padding: 0 40px 0 14px; } }
+.arq-hero__title { margin-left: -0.02em; }
 
 .arq-hero__grid {
   display: grid; grid-template-columns: repeat(12, 1fr);
@@ -172,32 +189,37 @@ html, body {
 .arq-hero__title {
   grid-column: 1 / -1;
   color: var(--bone);
-  font-family: var(--font-archivo-black), var(--font-hanken), system-ui, sans-serif;
+  font-family: var(--font-archivo-black), var(--font-inter), system-ui, sans-serif;
   font-weight: 400;
   font-style: normal;
-  line-height: 0.9;
-  letter-spacing: -0.045em;
+  line-height: 0.85;
+  letter-spacing: -0.035em;
   margin: 0;
-  font-size: clamp(64px, 12.5vw, 220px);
+  font-size: clamp(48px, 9vw, 170px);
   max-width: 100%;
   hyphens: none;
   translate: 0 0.08em;
   text-transform: none;
+  text-shadow:
+    0 1px 1px rgba(0,0,0,0.85),
+    0 0 3px rgba(0,0,0,0.75),
+    0 0 6px rgba(0,0,0,0.5),
+    0 0 14px rgba(0,0,0,0.3);
 }
 .arq-hero__title-italic {
-  font-family: var(--font-hanken), system-ui, sans-serif;
-  font-weight: 300;
-  font-style: italic;
-  letter-spacing: -0.025em;
+  font-family: var(--font-archivo-black), var(--font-inter), system-ui, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: -0.035em;
 }
 .arq-hero__title-row {
   display: inline-block;
   white-space: nowrap;
 }
-@media (min-width: 640px) { .arq-hero__title { font-size: clamp(96px, 12.5vw, 220px); } }
-@media (min-width: 768px) { .arq-hero__title { font-size: clamp(120px, 12vw, 220px); } }
-@media (min-width: 1024px) { .arq-hero__title { font-size: clamp(140px, 11.5vw, 220px); } }
-@media (min-width: 1280px) { .arq-hero__title { font-size: clamp(160px, 11vw, 220px); } }
+@media (min-width: 640px) { .arq-hero__title { font-size: clamp(72px, 9vw, 170px); } }
+@media (min-width: 768px) { .arq-hero__title { font-size: clamp(90px, 8.5vw, 170px); } }
+@media (min-width: 1024px) { .arq-hero__title { font-size: clamp(108px, 8vw, 170px); } }
+@media (min-width: 1280px) { .arq-hero__title { font-size: clamp(124px, 7.5vw, 170px); } }
 
 .arq-hero__aside {
   grid-column: 1 / -1;
@@ -205,23 +227,30 @@ html, body {
   padding-bottom: 20px;
 }
 @media (min-width: 1024px) {
-  .arq-hero__aside { grid-column: 9 / span 4; padding-bottom: 40px; }
+  .arq-hero__aside {
+    grid-column: 9 / span 4;
+    padding-bottom: 40px;
+    justify-self: end;
+    align-items: flex-end;
+    text-align: right;
+  }
+  .arq-hero__lede { text-align: right; }
 }
 
 .arq-hero__lede {
   font-family: var(--font-sans);
-  font-size: 13px; line-height: 1.35;
-  color: rgba(225,224,204,0.72);
-  margin: 0; max-width: 36ch;
+  font-size: 11px; line-height: 1.35;
+  color: #fff;
+  margin: 0; max-width: 34ch;
 }
 .arq-hero__lede a {
   color: var(--bone); text-decoration: underline;
   text-decoration-color: rgba(225,224,204,0.35);
   text-underline-offset: 3px;
 }
-.arq-hero__lede a:hover { text-decoration-color: var(--orange-500); color: var(--orange-300); }
-@media (min-width: 640px) { .arq-hero__lede { font-size: 14px; } }
-@media (min-width: 768px) { .arq-hero__lede { font-size: 15px; } }
+.arq-hero__lede a:hover { text-decoration-color: var(--red-500); color: var(--red-300); }
+@media (min-width: 640px) { .arq-hero__lede { font-size: 12px; } }
+@media (min-width: 768px) { .arq-hero__lede { font-size: 12px; } }
 
 /* Bone-white pill CTA with dark dot */
 .arq-joinbtn {
@@ -250,7 +279,7 @@ html, body {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.05em;
+  padding-bottom: 0.34em;
   line-height: inherit;
 }
 .arq-pull__word {
@@ -336,7 +365,7 @@ html, body {
 }
 .arq-thesis-page__eyebrow::before {
   content: ""; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--orange-500); box-shadow: 0 0 8px var(--orange-500);
+  background: var(--red-500); box-shadow: 0 0 8px var(--red-500);
 }
 .arq-thesis-page h1 {
   font-family: var(--font-display); font-weight: 400;
@@ -369,8 +398,8 @@ html, body {
   --muted: rgba(225,224,204,0.45);
   --rule: rgba(225,224,204,0.10);
   --rule-strong: rgba(225,224,204,0.22);
-  --laser: #F07427;
-  --laser-glow: rgba(240,116,39,0.55);
+  --laser: #E62630;
+  --laser-glow: rgba(230,38,48,0.55);
   --bg: #000;
   --pad: clamp(20px, 4vw, 56px);
 }
@@ -421,45 +450,51 @@ section.s {
 .reveal[data-d="300"] { transition-delay: .3s; }
 .reveal[data-d="400"] { transition-delay: .4s; }
 
-/* ───────── Thesis paper + interactive arena ───────── */
-.thesis-layout {
+/* ───────── Thesis (editorial statement) ───────── */
+.thesis-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(28px, 4vw, 64px);
-  align-items: stretch;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(40px, 6vw, 110px);
+  align-items: start;
 }
-@media (max-width: 960px) { .thesis-layout { grid-template-columns: 1fr; } }
+@media (max-width: 960px) {
+  .thesis-grid { grid-template-columns: 1fr; gap: clamp(28px, 6vw, 48px); }
+}
 
-.thesis-paper {
-  position: relative;
-  background:
-    radial-gradient(140% 90% at 0% 0%, rgba(225,224,204,0.04), transparent 55%),
-    linear-gradient(180deg, #0a0c10 0%, #06080b 100%);
-  color: var(--ink);
-  padding: clamp(36px, 5vw, 64px) clamp(34px, 4.4vw, 56px);
-  border: 1px solid var(--rule);
-  border-top: 1px solid var(--laser);
-  border-radius: 2px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.45);
-  overflow: hidden;
+.thesis-statement {
+  display: flex; flex-direction: column;
+  gap: clamp(22px, 3vw, 38px);
 }
-.thesis-paper h3 {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: clamp(22px, 2.4vw, 32px);
-  line-height: 1.1;
-  margin: 0 0 22px;
-  letter-spacing: -0.01em;
-  color: var(--ink);
+@media (min-width: 961px) {
+  .thesis-statement { position: sticky; top: clamp(48px, 12vh, 120px); }
 }
-.thesis-paper p {
+
+.thesis-headline {
+  font-size: clamp(33px, 4.4vw, 62px);
+  line-height: 1.03;
+  margin: 0;
+  max-width: 17ch;
+}
+
+.thesis-argument {
+  display: flex; flex-direction: column;
+  max-width: 54ch;
+}
+.thesis-argument p {
   font-family: var(--font-sans);
-  font-size: clamp(15px, 1.15vw, 17px);
-  line-height: 1.65;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.7;
   color: var(--body);
-  margin: 0 0 14px;
+  margin: 0 0 18px;
 }
-.thesis-paper p em { font-style: italic; color: var(--ink); font-weight: 500; }
+.thesis-argument p:last-child { margin-bottom: 0; }
+.thesis-argument p em { font-style: italic; color: var(--ink); font-weight: 500; }
+.thesis-argument p.thesis-argument__lead {
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin-bottom: 26px;
+}
 
 .thesis-arena {
   position: relative;
@@ -522,10 +557,10 @@ section.s {
 .arena-laser {
   position: absolute;
   height: 2px;
-  background: linear-gradient(90deg, rgba(240,116,39,0), #F07427 20%, #fff 50%, #F07427 80%, rgba(240,116,39,0));
+  background: linear-gradient(90deg, rgba(230,38,48,0), #E62630 20%, #fff 50%, #E62630 80%, rgba(230,38,48,0));
   transform-origin: 0 50%;
   pointer-events: none; opacity: 0;
-  box-shadow: 0 0 10px rgba(240,116,39,0.9), 0 0 24px rgba(240,116,39,0.6);
+  box-shadow: 0 0 10px rgba(230,38,48,0.9), 0 0 24px rgba(230,38,48,0.6);
   z-index: 5;
 }
 .arena-laser.fire { animation: arenaLaserFire .55s ease-out forwards; }
@@ -538,7 +573,7 @@ section.s {
   position: absolute;
   width: 60px; height: 60px; border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);
-  background: radial-gradient(circle, rgba(255,200,120,1) 0%, rgba(255,90,40,0.7) 30%, rgba(240,116,39,0) 70%);
+  background: radial-gradient(circle, rgba(255,190,180,1) 0%, rgba(255,60,55,0.7) 30%, rgba(230,38,48,0) 70%);
   pointer-events: none; z-index: 6;
 }
 .arena-flash.pop { animation: arenaFlashPop .5s ease-out forwards; }
@@ -666,7 +701,7 @@ section.s {
   cursor: pointer;
   transition: transform .35s cubic-bezier(.2,.7,.2,1), background .35s;
 }
-.suite-card:hover { transform: translateY(-6px); background: rgba(240,116,39,0.04); }
+.suite-card:hover { transform: translateY(-6px); background: rgba(230,38,48,0.04); }
 .suite-card:last-child { border-right: none; }
 .card-art {
   position: relative; aspect-ratio: 4 / 3;
@@ -678,8 +713,8 @@ section.s {
 .card-art .laser { opacity: 0.55; transition: opacity .25s, stroke-width .25s; }
 .suite-card:hover .card-art .laser { opacity: 1; animation: cardLaserPulse .55s ease-in-out infinite alternate; }
 @keyframes cardLaserPulse {
-  from { stroke-width: 1.2; filter: drop-shadow(0 0 0 rgba(240,116,39,0)); }
-  to   { stroke-width: 2.2; filter: drop-shadow(0 0 6px rgba(240,116,39,0.75)); }
+  from { stroke-width: 1.2; filter: drop-shadow(0 0 0 rgba(230,38,48,0)); }
+  to   { stroke-width: 2.2; filter: drop-shadow(0 0 6px rgba(230,38,48,0.75)); }
 }
 .card-art .laser-tip { transform-box: fill-box; transform-origin: center; transition: r .2s, opacity .2s; }
 .suite-card:hover .card-art .laser-tip { animation: cardTipPulse .55s ease-in-out infinite alternate; }
@@ -721,6 +756,217 @@ section.s {
   .suite-grid { grid-template-columns: 1fr; }
   .suite-card { border-right: none; border-bottom: 1px solid var(--rule); }
   .suite-card:last-child { border-bottom: none; }
+}
+
+/* ───────── Working Principle (Sense / Decide / Act) ───────── */
+.principle .s-headline { max-width: 18ch; }
+.principle .s-head {
+  display: grid; grid-template-columns: 1fr 3fr;
+  gap: 40px; align-items: baseline;
+  margin-bottom: clamp(40px, 8vh, 96px);
+}
+.principle .s-head .num {
+  font-family: var(--font-hanken), sans-serif;
+  font-style: italic; font-weight: 300;
+  color: var(--muted); font-size: 18px;
+  margin-top: 14px;
+}
+@media (max-width: 880px) { .principle .s-head { grid-template-columns: 1fr; gap: 20px; } }
+
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.pillar {
+  padding: 28px 28px 32px;
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, rgba(225,224,204,0.015), transparent);
+}
+.pillar:last-child { border-right: 0; }
+.pillar-num {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--laser);
+  font-weight: 700;
+}
+.pillar-title {
+  font-size: clamp(36px, 4.2vw, 58px);
+  margin: 14px 0 20px;
+  line-height: 1;
+}
+.pillar-anim {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px;
+  color: var(--ink);
+}
+.pillar-anim svg { width: 100%; height: 100%; display: block; }
+.pillar p {
+  font-size: 14px;
+  color: var(--body);
+  line-height: 1.55;
+  margin: 0;
+}
+@media (max-width: 960px) {
+  .principle-grid { grid-template-columns: 1fr; }
+  .pillar { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .pillar:last-child { border-bottom: 0; }
+}
+
+/* Sense — rotating sweep + drone dots that flare when the sweep hits */
+.radar { overflow: visible; }
+.sense-sweep {
+  transform-box: view-box;
+  transform-origin: 0 0; /* radar centre in viewBox coords */
+  animation: senseSweep 3s linear infinite;
+}
+@keyframes senseSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.sense-swarm {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: senseSwarmDrift 7s ease-in-out infinite alternate;
+}
+@keyframes senseSwarmDrift {
+  from { transform: translate(6px, -2px); }
+  to   { transform: translate(-22px, 12px); }
+}
+.sense-dot {
+  opacity: 0;
+  animation: senseDotFlare 3s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(230,38,48,0.7));
+}
+@keyframes senseDotFlare {
+  0%   { opacity: 0; r: 1.4; }
+  4%   { opacity: 1; r: 3.2; }
+  35%  { opacity: 0.55; r: 2; }
+  100% { opacity: 0; r: 1.4; }
+}
+
+/* Decide — decision tree, three branches with a cycling highlight */
+.decide { font-family: var(--font-sans); }
+.decide-input {
+  fill: #E62630;
+  filter: drop-shadow(0 0 5px rgba(230,38,48,0.6));
+}
+.decide-branch .decide-leg {
+  stroke: currentColor;
+  stroke-opacity: 0.22;
+  stroke-width: 1;
+}
+.decide-branch .decide-mid,
+.decide-branch .decide-end {
+  fill: transparent;
+  stroke: currentColor;
+  stroke-opacity: 0.45;
+  stroke-width: 1;
+}
+.decide-branch .decide-label {
+  font-size: 6px;
+  letter-spacing: 1.5px;
+  fill: currentColor;
+  opacity: 0.55;
+  dominant-baseline: middle;
+}
+
+/* Highlights cycle through IGNORE → TRACK → ENGAGE, ENGAGE stays lit longest */
+.decide-branch--ignore .decide-leg,
+.decide-branch--ignore .decide-mid,
+.decide-branch--ignore .decide-end,
+.decide-branch--ignore .decide-label,
+.decide-branch--track  .decide-leg,
+.decide-branch--track  .decide-mid,
+.decide-branch--track  .decide-end,
+.decide-branch--track  .decide-label,
+.decide-branch--engage .decide-leg,
+.decide-branch--engage .decide-mid,
+.decide-branch--engage .decide-end,
+.decide-branch--engage .decide-label {
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.decide-branch--ignore .decide-leg   { animation-name: decideLegLit;   animation-delay: 0s; }
+.decide-branch--ignore .decide-mid,
+.decide-branch--ignore .decide-end   { animation-name: decideNodeLit;  animation-delay: 0s; }
+.decide-branch--ignore .decide-label { animation-name: decideLabelLit; animation-delay: 0s; }
+
+.decide-branch--track .decide-leg   { animation-name: decideLegLit;   animation-delay: -2s; }
+.decide-branch--track .decide-mid,
+.decide-branch--track .decide-end   { animation-name: decideNodeLit;  animation-delay: -2s; }
+.decide-branch--track .decide-label { animation-name: decideLabelLit; animation-delay: -2s; }
+
+.decide-branch--engage .decide-leg   { animation-name: decideLegLitEngage;   }
+.decide-branch--engage .decide-mid,
+.decide-branch--engage .decide-end   { animation-name: decideNodeLitEngage;  }
+.decide-branch--engage .decide-label { animation-name: decideLabelLitEngage; }
+
+@keyframes decideLegLit {
+  0%, 26%, 38%, 100% { stroke: currentColor; stroke-opacity: 0.22; stroke-width: 1; }
+  30%                { stroke: #E62630;       stroke-opacity: 1;    stroke-width: 1.6; }
+}
+@keyframes decideNodeLit {
+  0%, 26%, 38%, 100% { stroke: currentColor; stroke-opacity: 0.45; fill: transparent; }
+  30%                { stroke: #E62630;       stroke-opacity: 1;    fill: rgba(230,38,48,0.05); }
+}
+@keyframes decideLabelLit {
+  0%, 26%, 38%, 100% { fill: currentColor; opacity: 0.55; }
+  30%                { fill: #E62630;       opacity: 1; }
+}
+@keyframes decideLegLitEngage {
+  0%, 60%, 100% { stroke: currentColor; stroke-opacity: 0.22; stroke-width: 1; }
+  66%, 96%      { stroke: #E62630;       stroke-opacity: 1;    stroke-width: 1.6; }
+}
+@keyframes decideNodeLitEngage {
+  0%, 60%, 100% { stroke: currentColor; stroke-opacity: 0.45; fill: transparent; }
+  66%, 96%      { stroke: #E62630;       stroke-opacity: 1;    fill: rgba(230,38,48,0.05); }
+}
+@keyframes decideLabelLitEngage {
+  0%, 60%, 100% { fill: currentColor; opacity: 0.55; }
+  66%, 96%      { fill: #E62630;       opacity: 1; }
+}
+
+/* Act — laser fires repeatedly + drone bob */
+.act-laser {
+  animation: principleFire 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(230,38,48,0.4));
+}
+@keyframes principleFire {
+  0%, 100% { opacity: 0.45; stroke-width: 1.2; }
+  50%      { opacity: 1;    stroke-width: 2.2; }
+}
+/* Act — swarm of 5 drones drifting together towards the tower
+   (matched to the Sense swarm's direction + period so the two read as one) */
+.act-swarm {
+  transform-box: view-box;
+  animation: actSwarmDrift 7s ease-in-out infinite alternate;
+}
+@keyframes actSwarmDrift {
+  from { transform: translate(12px, -4px); }
+  to   { transform: translate(-28px, 8px); }
+}
+.act-drone {
+  transform-box: view-box;
+  animation: actDroneBob 2.6s ease-in-out infinite;
+}
+.act-drone--2 { animation-delay: -0.4s; animation-duration: 2.9s; }
+.act-drone--3 { animation-delay: -0.8s; animation-duration: 2.3s; }
+.act-drone--4 { animation-delay: -1.2s; animation-duration: 3.1s; }
+.act-drone--5 { animation-delay: -0.2s; animation-duration: 2.7s; }
+@keyframes actDroneBob {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(0, -3px); }
 }
 
 /* ───────── Domains ───────── */
@@ -983,24 +1229,50 @@ section.s {
   transform: scale(1.04);
 }
 
-/* ───────── Final CTA / footer ───────── */
+/* ───────── Final CTA / footer (with subtle arena background) ───────── */
 .cta-final {
   position: relative;
   padding: clamp(80px, 12vh, 160px) var(--pad) 60px;
   border-top: 1px solid var(--rule);
   overflow: hidden;
+  isolation: isolate;
 }
 .cta-final::before {
   content: ""; position: absolute; inset: auto 0 0 0; height: 60%;
-  background: radial-gradient(60% 100% at 50% 100%, rgba(240,116,39,0.10) 0%, transparent 70%);
+  background: radial-gradient(60% 100% at 50% 100%, rgba(230,38,48,0.10) 0%, transparent 70%);
   pointer-events: none;
+  z-index: 1;
 }
+.cta-final > h2,
+.cta-final > .cta-row,
+.cta-final > .footer-bottom { position: relative; z-index: 2; }
+
+.cta-final__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  filter: saturate(0.85);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.15) 100%);
+          mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.15) 100%);
+}
+.cta-final__bg .thesis-arena {
+  position: absolute; inset: 0;
+  border: 0;
+  border-radius: 0;
+  background:
+    radial-gradient(80% 60% at 50% 100%, #0a0c11 0%, transparent 65%),
+    linear-gradient(180deg, #06080b 0%, #050608 60%, #04050a 100%);
+}
+.cta-final__bg .arena-tower { opacity: 0.85; }
+.cta-final__bg .arena-drone { opacity: 0.95; }
 .cta-final .display {
-  font-size: clamp(56px, 11vw, 200px);
-  line-height: 0.92;
+  font-size: clamp(40px, 7vw, 120px);
+  line-height: 0.95;
   text-align: center;
   margin: 0 auto;
-  max-width: 14ch;
+  max-width: 18ch;
 }
 .cta-row {
   margin-top: 60px;
