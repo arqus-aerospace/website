@@ -3,7 +3,7 @@ export default function ThesisPaper() {
     <section className="s thesis" id="thesis">
       <div className="thesis-grid">
         <div className="thesis-statement">
-          <span className="label">Thesis</span>
+          <span className="label label--bare">Thesis</span>
           <h2 className="thesis-headline display reveal" data-d="100">
             Whoever controls the high ground controls the future. Today, that
             ground is moving to <em>orbit</em>.
@@ -22,10 +22,13 @@ export default function ThesisPaper() {
             expensive missiles, and almost nobody has noticed.
           </p>
           <p className="reveal" data-d="300">
-            Europe needs dominance in this final frontier. We are building the{" "}
-            <em>space arsenal</em>: autonomous, directed-energy defense priced
-            per intercept in cents, not millions.
+            Europe needs dominance in this final frontier.
           </p>
+
+          <blockquote className="thesis-quote reveal" data-d="400">
+            &ldquo;We are building the <em>space arsenal</em>: autonomous,
+            directed-energy defense priced in cents, not millions.&rdquo;
+          </blockquote>
         </div>
       </div>
     </section>

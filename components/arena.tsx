@@ -266,7 +266,7 @@ export default function Arena({
       )}
 
       <div ref={towerRef} className="arena-tower">
-        <svg viewBox="0 0 80 160" preserveAspectRatio="xMidYEnd meet">
+        <svg viewBox="0 0 80 160" preserveAspectRatio="xMidYMax meet">
           <rect x="22" y="140" width="36" height="14" fill="#1a1e25" />
           <rect x="14" y="152" width="52" height="6" fill="#0e1117" />
           <rect x="36" y="70" width="8" height="80" fill="#1a1e25" />

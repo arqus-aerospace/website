@@ -1,10 +1,13 @@
 export default function WorkingPrinciple() {
   return (
     <section className="s principle" id="capabilities">
+      <header className="principle-head reveal" data-d="100">
+        <span className="label label--bare">Working Principle</span>
+        <h2 className="principle-headline display">How It Works</h2>
+      </header>
       <div className="principle-grid">
         {/* SENSE */}
         <article className="pillar reveal" data-d="100">
-          <div className="pillar-num">01 / Sense</div>
           <h3 className="pillar-title display">Sense.</h3>
           <div className="pillar-anim pillar-anim--radar" aria-hidden="true">
             <svg viewBox="-80 -60 160 120" className="radar">
@@ -48,7 +51,6 @@ export default function WorkingPrinciple() {
 
         {/* DECIDE */}
         <article className="pillar reveal" data-d="200">
-          <div className="pillar-num">02 / Decide</div>
           <h3 className="pillar-title display">Decide.</h3>
           <div className="pillar-anim pillar-anim--decide" aria-hidden="true">
             <svg viewBox="-100 -45 200 90" className="decide">
@@ -92,7 +94,6 @@ export default function WorkingPrinciple() {
 
         {/* ACT */}
         <article className="pillar reveal" data-d="300">
-          <div className="pillar-num">03 / Act</div>
           <h3 className="pillar-title display">Act.</h3>
           <div className="pillar-anim pillar-anim--act" aria-hidden="true">
             <svg viewBox="0 0 240 160" className="act">

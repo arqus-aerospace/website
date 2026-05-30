@@ -66,21 +66,34 @@ export default function Hero({ onBriefing }: { onBriefing: () => void }) {
           Arqus
         </a>
 
+        <button
+          type="button"
+          className="arq-hero__contact"
+          onClick={onBriefing}
+        >
+          Get in contact
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </button>
+
         <div className="arq-hero__bottom">
           <div className="arq-hero__grid">
             <h1 className="arq-hero__title">
-              <WordsPullUp text="Building the" baseDelay={0.15} />
+              <WordsPullUp text="Redefining defense" baseDelay={0.15} />
               <br />
-              <span className="arq-hero__title-row">
-                <WordsPullUp text="space" baseDelay={0.35} />{" "}
-                <span className="arq-pull__mask">
-                  <span
-                    className="arq-pull__word arq-hero__title-italic"
-                    style={{ animationDelay: "0.45s" }}
-                  >
-                    arsenal.
-                  </span>
-                </span>
+              <WordsPullUp text="capabilities with" baseDelay={0.35} />
+              <br />
+              <span className="arq-hero__title-em">
+                <WordsPullUp text="autonomous directed energy." baseDelay={0.55} />
               </span>
             </h1>
 

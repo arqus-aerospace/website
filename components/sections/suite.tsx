@@ -153,21 +153,7 @@ export default function Suite() {
         ))}
 
         <div className="suite-intro">
-          <div className="suite-top-row">
-            <span>Page 03</span>
-            <span>May 2026</span>
-          </div>
-          <div className="suite-headrow">
-            <p className="suite-lead">
-              Protecting our most valuable infrastructure: from ground to space.
-              Autonomous, real-time operations.
-            </p>
-            <h2 className="suite-title">
-              The Arqus
-              <br />
-              Suite
-            </h2>
-          </div>
+          <h2 className="suite-title">The Arqus Suite</h2>
         </div>
       </div>
 
@@ -450,11 +436,6 @@ export default function Suite() {
             Dazzle hostile satellites, safeguard constellations, divert threats.
           </p>
         </article>
-      </div>
-
-      <div className="suite-foot-meta">
-        <span>EUDIS Business Accelerator</span>
-        <span>Arqus</span>
       </div>
     </section>
   );
