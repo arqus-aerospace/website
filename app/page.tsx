@@ -1,11 +1,11 @@
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-black">
+    <main className="flex min-h-screen items-center justify-center bg-black px-6">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/logo/logo_only.png"
+        src="/logo/arqus-logo.svg"
         alt="Arqus Aerospace"
-        className="w-[min(70vmin,560px)]"
+        className="w-[min(80vw,640px)]"
       />
     </main>
   );
