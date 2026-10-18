@@ -1,16 +1,12 @@
-"use client";
-
-import { useState } from "react";
-import Hero from "@/components/hero";
-import BriefingModal from "@/components/briefing-modal";
-
 export default function Home() {
-  const [modal, setModal] = useState(false);
-
   return (
-    <main>
-      <Hero onBriefing={() => setModal(true)} />
-      {modal && <BriefingModal onClose={() => setModal(false)} />}
+    <main className="flex min-h-screen items-center justify-center bg-black">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo/logo_only.png"
+        alt="Arqus Aerospace"
+        className="w-[min(70vmin,560px)]"
+      />
     </main>
   );
 }
