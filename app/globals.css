@@ -839,3 +839,7 @@ html { scroll-behavior: smooth; }
   color: rgba(225,224,204,0.55); text-decoration: none; transition: color 0.3s var(--ease);
 }
 .arq-imprint-link:hover, .arq-imprint-link:focus-visible { color: #F07427; }
+
+/* Open roles: the place line moves up a row so a long call link has the
+   bottom of the card to itself. */
+.arq-role .arq-tile__foot { margin-bottom: 26px; }
