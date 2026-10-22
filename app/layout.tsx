@@ -18,6 +18,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 const SITE_URL = "https://arqusaerospace.com";
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export const metadata: Metadata = {
   title: {
@@ -67,8 +68,8 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/logo/icon.png",
-    apple: "/logo/icon.png",
+    icon: `${BASE}/logo/icon.png`,
+    apple: `${BASE}/logo/icon.png`,
   },
 };
 
