@@ -173,7 +173,7 @@ export default function Hero({ stealth = false }: { stealth?: boolean }) {
       {/* 1 — the statement */}
       <section className="arq-panel" aria-label="Arqus Aerospace">
         <div className="arq-hero__bottom arq-hero__copy">
-          <DockingLogo src={LOGO} />
+          <DockingLogo src={LOGO} dock={!stealth} />
           <h1 className="arq-hero__slogan">
             <WordsPullUp text="Europe's guardian" baseDelay={0.35} />
             <br />
