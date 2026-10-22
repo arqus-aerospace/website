@@ -1,8 +1,10 @@
-// Opportunities and News: what follows the threats. The roles are placeholder;
-// the news is real, collected into lib/news/news.json by scripts/update-news.mjs
+// Opportunities and News: what follows the threats. The RF role is listed
+// with Atlantic's recruiting page; for the others, candidates call directly.
+// The news is real, collected into lib/news/news.json by scripts/update-news.mjs
 // (`npm run news`, and before every build).
 
 import news from "@/lib/news/news.json";
+import RoleTile, { type Role } from "@/components/role-tile";
 
 type NewsItem = { url: string; title: string; source: string; author?: string; date: string; summary: string; image: string };
 const NEWS = news.items as NewsItem[];
@@ -10,10 +12,20 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 /** Saved pictures are site paths; anything else is shown as given. */
 const imageSrc = (src: string) => (src.startsWith("/") ? BASE + src : src);
 
-const ROLES = [
-  { title: "Orbital Dynamics Engineer", team: "Space Domain Awareness", place: "Munich · On-site" },
-  { title: "GNC Engineer", team: "Spacecraft", place: "Munich · On-site" },
-  { title: "Business Development, Defence", team: "Commercial", place: "Munich / Brussels" },
+const CALL: Pick<Role, "href" | "action"> = { href: "tel:+31612310062", action: "Call directly · +31 612310062" };
+
+const ROLES: Role[] = [
+  {
+    title: "RF Engineer",
+    team: "Space antenna",
+    place: "Munich · On-site",
+    href: "https://jobsatlanticvc.recruitee.com/o/rf-engineer-space-antenna-gn-defencetech-venture-munich",
+    action: "Apply →",
+    external: true,
+  },
+  { title: "GNC Engineer", team: "Spacecraft", place: "Munich · On-site", ...CALL },
+  { title: "Flight Dynamics / Astrodynamics Engineer", team: "Space Domain Awareness", place: "Munich · On-site", ...CALL },
+  { title: "Structural Engineer", team: "Spacecraft", place: "Munich · On-site", ...CALL },
 ];
 
 /** "2 Sep 2026", or nothing if the source gave no date. */
@@ -37,14 +49,7 @@ export function Opportunities() {
       <Head id="opportunities-title" kicker="Opportunities" title="Open" italic="roles." />
       <ul className="arq-tiles">
         {ROLES.map((r) => (
-          <li key={r.title} className="arq-tile">
-            <span className="arq-tile__meta">{r.team}</span>
-            <span className="arq-tile__title">{r.title}</span>
-            <span className="arq-tile__foot">{r.place}</span>
-            <a className="arq-tile__link" href={`mailto:contact@arqusaerospace.com?subject=${encodeURIComponent(r.title)}`}>
-              Apply →
-            </a>
-          </li>
+          <RoleTile key={r.title} role={r} />
         ))}
       </ul>
     </section>
