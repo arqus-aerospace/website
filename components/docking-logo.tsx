@@ -47,16 +47,26 @@ export default function DockingLogo({ src }: { src: string }) {
       if (!raf) raf = requestAnimationFrame(place);
     };
     place();
-    // the slot can move while the fonts above and around it settle
+    // The slot can move while the fonts above and around it settle. The copy
+    // is pinned to the bottom of the screen, so the headline under the slot
+    // growing moves the slot without resizing it: watch the copy as well.
     const ro = new ResizeObserver(request);
     ro.observe(slot);
+    if (slot.parentElement) ro.observe(slot.parentElement);
+    let alive = true;
+    document.fonts?.ready.then(() => {
+      if (alive) request();
+    });
     window.addEventListener("scroll", request, { passive: true });
     window.addEventListener("resize", request);
+    window.addEventListener("load", request);
     return () => {
+      alive = false;
       cancelAnimationFrame(raf);
       ro.disconnect();
       window.removeEventListener("scroll", request);
       window.removeEventListener("resize", request);
+      window.removeEventListener("load", request);
     };
   }, []);
 
