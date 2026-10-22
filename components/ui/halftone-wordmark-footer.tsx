@@ -90,6 +90,8 @@ export interface HalftoneWordmarkFooterProps {
   height?: string
   /** Extra root class names. */
   className?: string
+  /** Anything else to place inside the root, over the dots. */
+  children?: React.ReactNode
 }
 
 const PRESETS: { [K in HalftonePreset]: HalftonePalette } = {
@@ -220,6 +222,7 @@ export default function HalftoneWordmarkFooter({
   monoFamily = MONO_STACK,
   height = "560px",
   className = "",
+  children,
 }: HalftoneWordmarkFooterProps) {
   const colors = { ...(PRESETS[preset] || PRESETS.night), ...(palette || {}) }
   const rootRef = React.useRef(null as HTMLElement | null)
@@ -684,6 +687,7 @@ export default function HalftoneWordmarkFooter({
           </button>
         ) : null}
       </div>
+      {children}
     </footer>
   )
 }

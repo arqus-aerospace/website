@@ -17,6 +17,7 @@ const GLIDE_MS = 950;
 
 export function useStepScroll(steps: number) {
   useEffect(() => {
+    if (steps <= 0) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const vh = () => window.innerHeight;
     let gliding = false;
