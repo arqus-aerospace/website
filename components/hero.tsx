@@ -58,8 +58,10 @@ function WordsPullUp({
  *
  * Landing on 3 or 4 plays its move; leaving plays it back. Past them the
  * stage lets go.
+ *
+ * `stealth` keeps only panel 1: no steps, no cue, the stage never moves on.
  */
-export default function Hero() {
+export default function Hero({ stealth = false }: { stealth?: boolean }) {
   const [idx, setIdx] = useState(0);
   const [inThreats, setInThreats] = useState(false);
   const [keysOn, setKeysOn] = useState(false);
@@ -69,13 +71,14 @@ export default function Hero() {
   const countRef = useRef<HTMLSpanElement | null>(null);
   const drive = useRef<{ zoom: number; shield: number; year?: number; count?: number }>({ zoom: 0, shield: 0 });
   // four steps on the stage, and a fifth to land on whatever follows it
-  useStepScroll(4);
+  useStepScroll(stealth ? 0 : 4);
   const sc = SCENES[idx];
 
   // Which step we are on, from the scroll: the page snaps a screen at a
   // time, so the nearest whole screen is the step. 0 statement, 1 threats,
   // 2 close-up, 3 shield; beyond that the stage has let go.
   useEffect(() => {
+    if (stealth) return;
     let raf = 0;
     const read = () => {
       raf = 0;
@@ -96,7 +99,7 @@ export default function Hero() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [stealth]);
 
   // the year and the count follow the rollout as the theatre plays it
   useEffect(() => {
@@ -129,12 +132,13 @@ export default function Hero() {
 
   // ?track=N opens on that threat
   useEffect(() => {
+    if (stealth) return;
     const asked = Number(new URLSearchParams(window.location.search).get("track"));
     if (asked >= 1 && asked <= SCENES.length) {
       setIdx(asked - 1);
       threatsRef.current?.scrollIntoView();
     }
-  }, []);
+  }, [stealth]);
 
   const go = useCallback((d: number) => {
     setIdx((i) => (i + d + SCENES.length) % SCENES.length);
@@ -182,95 +186,103 @@ export default function Hero() {
               </span>
             </span>
           </h1>
-          <p className="arq-hero__statement">
-            Space is no longer a safe haven. Satellites now shadow, stalk and grapple one another in
-            orbit. Arqus gives Europe the eyes to see it first, so it can be met calmly and early,
-            before anything escalates. (Placeholder.)
-          </p>
+          {stealth ? null : (
+            <p className="arq-hero__statement">
+              Space is no longer a safe haven. Satellites now shadow, stalk and grapple one another in
+              orbit. Arqus gives Europe the eyes to see it first, so it can be met calmly and early,
+              before anything escalates. (Placeholder.)
+            </p>
+          )}
         </div>
         <Backers />
-        <span className="arq-hero__cue" aria-hidden="true">
-          Scroll
-        </span>
+        {stealth ? null : (
+          <span className="arq-hero__cue" aria-hidden="true">
+            Scroll
+          </span>
+        )}
       </section>
 
-      {/* 2 — the threats, one scenario at a time */}
-      <section id="threats" ref={threatsRef} className="arq-panel arq-threats" aria-label="Threats">
-        <div className="arq-hero__bottom arq-hero__copy">
-          <span className="arq-threats__kicker">
-            The threat · {pad(idx + 1)} / {pad(SCENES.length)}
-          </span>
-          <div key={idx} className="arq-threats__body" aria-live="polite">
-            <h2 className="arq-threats__title">{sc.trend}</h2>
-            <p className="arq-threats__story">{sc.story}</p>
-          </div>
-          <div className="arq-threats__controls">
-            <button type="button" className="arq-threats__arrow" onClick={() => go(-1)} aria-label="Previous threat">
-              ←
-            </button>
-            <ol className="arq-threats__ticks">
-              {SCENES.map((s, i) => (
-                <li key={s.name}>
-                  <button
-                    type="button"
-                    aria-label={`${s.trend}: ${s.name}`}
-                    aria-current={i === idx ? "true" : undefined}
-                    onClick={() => setIdx(i)}
-                    style={{ "--tick": s.color } as React.CSSProperties}
-                  />
-                </li>
-              ))}
-            </ol>
-            <button type="button" className="arq-threats__arrow" onClick={() => go(1)} aria-label="Next threat">
-              →
-            </button>
-          </div>
-          <p className="arq-threats__note">Placeholder copy · threat readings are illustrative</p>
-        </div>
-      </section>
+      {stealth ? null : (
+        <>
+          {/* 2 — the threats, one scenario at a time */}
+          <section id="threats" ref={threatsRef} className="arq-panel arq-threats" aria-label="Threats">
+            <div className="arq-hero__bottom arq-hero__copy">
+              <span className="arq-threats__kicker">
+                The threat · {pad(idx + 1)} / {pad(SCENES.length)}
+              </span>
+              <div key={idx} className="arq-threats__body" aria-live="polite">
+                <h2 className="arq-threats__title">{sc.trend}</h2>
+                <p className="arq-threats__story">{sc.story}</p>
+              </div>
+              <div className="arq-threats__controls">
+                <button type="button" className="arq-threats__arrow" onClick={() => go(-1)} aria-label="Previous threat">
+                  ←
+                </button>
+                <ol className="arq-threats__ticks">
+                  {SCENES.map((s, i) => (
+                    <li key={s.name}>
+                      <button
+                        type="button"
+                        aria-label={`${s.trend}: ${s.name}`}
+                        aria-current={i === idx ? "true" : undefined}
+                        onClick={() => setIdx(i)}
+                        style={{ "--tick": s.color } as React.CSSProperties}
+                      />
+                    </li>
+                  ))}
+                </ol>
+                <button type="button" className="arq-threats__arrow" onClick={() => go(1)} aria-label="Next threat">
+                  →
+                </button>
+              </div>
+              <p className="arq-threats__note">Placeholder copy · threat readings are illustrative</p>
+            </div>
+          </section>
 
-      {/* 3 — the close-up on one of ours */}
-      <section id="sentinel" className="arq-panel" aria-label="Our spacecraft">
-        <div className="arq-hero__bottom arq-hero__copy">
-          <span className="arq-threats__kicker">Arqus · Sentinel</span>
-          <h2 className="arq-threats__title">Up close.</h2>
-          <p className="arq-threats__story">
-            Placeholder. Every light you saw circling the target is one of ours: a sentinel that
-            holds station beside what it watches, sees what it does, and tells you before it
-            matters.
-          </p>
-          <p className="arq-threats__note">Stand-in model · our spacecraft is not shown</p>
-        </div>
-      </section>
+          {/* 3 — the close-up on one of ours */}
+          <section id="sentinel" className="arq-panel" aria-label="Our spacecraft">
+            <div className="arq-hero__bottom arq-hero__copy">
+              <span className="arq-threats__kicker">Arqus · Sentinel</span>
+              <h2 className="arq-threats__title">Up close.</h2>
+              <p className="arq-threats__story">
+                Placeholder. Every light you saw circling the target is one of ours: a sentinel that
+                holds station beside what it watches, sees what it does, and tells you before it
+                matters.
+              </p>
+              <p className="arq-threats__note">Stand-in model · our spacecraft is not shown</p>
+            </div>
+          </section>
 
-      {/* 4 — the shield */}
-      <section id="shield" className="arq-panel" aria-label="The constellation">
-        {/* the rollout clock, top right, where the card sits for the threats */}
-        <div className="arq-shield__clock" aria-hidden="true">
-          <span className="arq-shield__kicker">
-            Deployment · {DEPLOY_FROM}–{DEPLOY_FROM + DEPLOY_SHARE.length - 1}
-          </span>
-          <span className="arq-shield__date">
-            <span ref={monthRef} className="arq-shield__month">Jan</span>
-            <span ref={yearRef} className="arq-shield__year">{DEPLOY_FROM}</span>
-          </span>
-          <span className="arq-shield__count">
-            <span ref={countRef}>000</span> / {SHIELD_SIZE} in orbit
-          </span>
-        </div>
-        <div className="arq-hero__bottom arq-hero__copy">
-          <span className="arq-threats__kicker">The constellation</span>
-          <h2 className="arq-threats__title">
-            A shield, <br />
-            not a satellite.
-          </h2>
-          <p className="arq-threats__story">
-            Placeholder. One sentinel watches one target. A constellation of them, in every
-            orbit from low Earth to geostationary, watches all of it, all of the time.
-          </p>
-          <p className="arq-threats__note">Placeholder copy · rollout and constellation are illustrative</p>
-        </div>
-      </section>
+          {/* 4 — the shield */}
+          <section id="shield" className="arq-panel" aria-label="The constellation">
+            {/* the rollout clock, top right, where the card sits for the threats */}
+            <div className="arq-shield__clock" aria-hidden="true">
+              <span className="arq-shield__kicker">
+                Deployment · {DEPLOY_FROM}–{DEPLOY_FROM + DEPLOY_SHARE.length - 1}
+              </span>
+              <span className="arq-shield__date">
+                <span ref={monthRef} className="arq-shield__month">Jan</span>
+                <span ref={yearRef} className="arq-shield__year">{DEPLOY_FROM}</span>
+              </span>
+              <span className="arq-shield__count">
+                <span ref={countRef}>000</span> / {SHIELD_SIZE} in orbit
+              </span>
+            </div>
+            <div className="arq-hero__bottom arq-hero__copy">
+              <span className="arq-threats__kicker">The constellation</span>
+              <h2 className="arq-threats__title">
+                A shield, <br />
+                not a satellite.
+              </h2>
+              <p className="arq-threats__story">
+                Placeholder. One sentinel watches one target. A constellation of them, in every
+                orbit from low Earth to geostationary, watches all of it, all of the time.
+              </p>
+              <p className="arq-threats__note">Placeholder copy · rollout and constellation are illustrative</p>
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 }

@@ -31,20 +31,31 @@ const COLUMNS: FooterColumn[] = [
   },
 ];
 
-export default function SiteFooter() {
+// Stealth gives nothing away: the email, and nothing else.
+const STEALTH_COLUMNS: FooterColumn[] = [
+  {
+    title: "Contact",
+    links: [{ label: "contact@arqusaerospace.com", href: "mailto:contact@arqusaerospace.com" }],
+  },
+];
+
+export default function SiteFooter({ stealth = false }: { stealth?: boolean }) {
   return (
     <HalftoneWordmarkFooter
       wordmark="Arqus"
       wordmarkSrc={`${BASE}/assets/arqus-wordmark-white-cropped.png`}
       label="Arqus Aerospace"
       meta="©2026 · Munich"
-      columns={COLUMNS}
+      columns={stealth ? STEALTH_COLUMNS : COLUMNS}
       palette={{ background: "#000000", ink: "#E1E0CC", warm: "#F07427" }}
       monoFamily="var(--font-sans)"
       crop={0.14}
       grain={0.8}
       height="clamp(440px, 52vw, 720px)"
       satellites={3}
-    />
+    >
+      {/* the way in: one more dot in the field, bottom right */}
+      {stealth ? <a className="arq-secret" href={`${BASE}/full`} aria-label="Enter" /> : null}
+    </HalftoneWordmarkFooter>
   );
 }
