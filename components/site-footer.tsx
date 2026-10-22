@@ -41,21 +41,26 @@ const STEALTH_COLUMNS: FooterColumn[] = [
 
 export default function SiteFooter({ stealth = false }: { stealth?: boolean }) {
   return (
-    <HalftoneWordmarkFooter
-      wordmark="Arqus"
-      wordmarkSrc={`${BASE}/assets/arqus-wordmark-white-cropped.png`}
-      label="Arqus Aerospace"
-      meta="©2026 · Munich"
-      columns={stealth ? STEALTH_COLUMNS : COLUMNS}
-      palette={{ background: "#000000", ink: "#E1E0CC", warm: "#F07427" }}
-      monoFamily="var(--font-sans)"
-      crop={0.14}
-      grain={0.8}
-      height="clamp(440px, 52vw, 720px)"
-      satellites={3}
-    >
-      {/* the way in: one more dot in the field, bottom right */}
-      {stealth ? <a className="arq-secret" href={`${BASE}/full`} aria-label="Enter" /> : null}
-    </HalftoneWordmarkFooter>
+    <div id="contact">
+      <HalftoneWordmarkFooter
+        wordmark="Arqus"
+        wordmarkSrc={`${BASE}/assets/arqus-wordmark-white-cropped.png`}
+        label="Arqus Aerospace"
+        meta="©2026 · Munich"
+        columns={stealth ? STEALTH_COLUMNS : COLUMNS}
+        palette={{ background: "#000000", ink: "#E1E0CC", warm: "#F07427" }}
+        monoFamily="var(--font-sans)"
+        crop={0.14}
+        grain={0.8}
+        height="clamp(440px, 52vw, 720px)"
+        satellites={3}
+      >
+        <a className="arq-imprint-link" href={`${BASE}/imprint`}>
+          Imprint
+        </a>
+        {/* the way in: one more dot in the field, bottom right */}
+        {stealth ? <a className="arq-secret" href={`${BASE}/full`} aria-label="Enter" /> : null}
+      </HalftoneWordmarkFooter>
+    </div>
   );
 }

@@ -12,7 +12,7 @@ import { useEffect, useRef } from "react";
  * between where that slot is now and the corner, by how far the page has
  * scrolled through the first half screen. Scrolling back up plays it back.
  */
-export default function DockingLogo({ src }: { src: string }) {
+export default function DockingLogo({ src, dock = true }: { src: string; dock?: boolean }) {
   const slotRef = useRef<HTMLDivElement | null>(null);
   const logoRef = useRef<HTMLAnchorElement | null>(null);
 
@@ -34,7 +34,7 @@ export default function DockingLogo({ src }: { src: string }) {
       const toW = (from.width / from.height) * toH;
       const toX = narrow ? 16 : 30;
       const toY = narrow ? 14 : 24;
-      const e = ease(Math.max(0, Math.min(1, window.scrollY / (vh * 0.55))));
+      const e = dock ? ease(Math.max(0, Math.min(1, window.scrollY / (vh * 0.55)))) : 0;
       const s = 1 + (toW / from.width - 1) * e;
       const x = from.left + (toX - from.left) * e;
       const y = from.top + (toY - from.top) * e;
@@ -68,12 +68,12 @@ export default function DockingLogo({ src }: { src: string }) {
       window.removeEventListener("resize", request);
       window.removeEventListener("load", request);
     };
-  }, []);
+  }, [dock]);
 
   return (
     <>
       <div ref={slotRef} className="arq-hero__logo" aria-hidden="true" />
-      <a ref={logoRef} href="#top" className="arq-docklogo" aria-label="Arqus Aerospace, back to top">
+      <a ref={logoRef} href="#top" className="arq-docklogo" data-dock={dock ? undefined : "off"} aria-label="Arqus Aerospace, back to top">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt="Arqus Aerospace" />
       </a>
