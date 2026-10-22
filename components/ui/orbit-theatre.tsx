@@ -10,7 +10,9 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {
   MOON_RADIUS_KM,
+  MU,
   MU_MOON,
+  RE,
   altitudeKm,
   gmst,
   makeOrbit,
@@ -860,24 +862,20 @@ export function OrbitTheatre({
 
     /* --- pointer ------------------------------------------------------------- */
     let px = 0, py = 0, hoverX = -1e4, hoverY = -1e4;
-    let lastPX = 0, lastPY = 0, lastPT = 0, energy = 0;
+    /** When the pointer came onto the stage; 0 while it is off. */
+    let hoverSince = 0;
     const onPointer = (ev: PointerEvent) => {
       if (!opts.current.interactive) return;
       const r = host.getBoundingClientRect();
       if (ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom) {
-        px = py = 0; hoverX = hoverY = -1e4; lastPT = 0;
+        px = py = 0; hoverX = hoverY = -1e4; hoverSince = 0;
         return;
       }
+      if (!hoverSince) hoverSince = performance.now();
       px = ((ev.clientX - r.left) / r.width - 0.5) * 2;
       py = ((ev.clientY - r.top) / r.height - 0.5) * 2;
       hoverX = ev.clientX - r.left;
       hoverY = ev.clientY - r.top;
-      const now = performance.now();
-      const dt = (now - lastPT) / 1000;
-      if (lastPT && dt > 0 && dt < 0.25) {
-        energy = Math.min(1, energy + Math.hypot(px - lastPX, py - lastPY) * 0.9);
-      }
-      lastPX = px; lastPY = py; lastPT = now;
     };
     window.addEventListener("pointermove", onPointer, { passive: true });
 
@@ -1223,6 +1221,149 @@ export function OrbitTheatre({
       return marks;
     }
 
+    /* --- Vulkan OS: a red launch into LEO, shown once the pointer has rested
+           on the opening shot for a second. Its name, and on hover a line
+           saying it is still to be announced, is all it says. ------------- */
+    const VULKAN_RGB = "255,59,48";
+    const VULKAN_ASCENT = 0.45; // radians until it reaches orbit
+    const VULKAN_ALT = 0.085; // orbit height, in Earth radii (about 540 km)
+    // its mean motion, rad per simulated second, so it keeps pace with the
+    // other craft at the same warp
+    const VULKAN_N = Math.sqrt(MU / Math.pow(RE * (1 + VULKAN_ALT), 3));
+    const VULKAN_TRAIL = TAU - 0.4; // longest track kept behind the head
+    const VULKAN_BLINK_S = 2.6; // one cycle of the head's two blinks and rest
+    let vulkan: { site: THREE.Vector3; dir: THREE.Vector3; t0: number; sim0: number } | null = null;
+    let vulkanHotUntil = 0;
+    let vulkanVis = 0;
+    let vulkanLastT = 0;
+    const vulkanP = new THREE.Vector3();
+
+    /** The track at `th` radians downrange: up from the ground, then round in LEO. */
+    function vulkanAt(V: { site: THREE.Vector3; dir: THREE.Vector3 }, th: number) {
+      const u = Math.min(1, th / VULKAN_ASCENT);
+      const r = 1.002 + VULKAN_ALT * (1 - Math.pow(1 - u, 3));
+      return vulkanP
+        .copy(V.site)
+        .multiplyScalar(Math.cos(th))
+        .addScaledVector(V.dir, Math.sin(th))
+        .multiplyScalar(r);
+    }
+
+    function drawVulkan(hits: (a: Box) => boolean, taken: Box[]) {
+      const now = performance.now();
+      const dt = vulkanLastT ? Math.min(0.1, (now - vulkanLastT) / 1000) : 0;
+      vulkanLastT = now;
+      const opening = at === -1 && to === null && zoomS === 0 && shieldS === 0;
+      if (!vulkan && opening && hoverSince && now - hoverSince > 1000) {
+        // Launch from the near side, low and right of centre, heading up and
+        // across the face, so the climb is in view whatever the hour.
+        const c = camera.position.clone().normalize();
+        const R = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+        const U = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+        const site = c.clone().multiplyScalar(0.8).addScaledVector(R, 0.25).addScaledVector(U, -0.5).normalize();
+        const head = U.clone().multiplyScalar(0.85).addScaledVector(R, -0.35);
+        const dir = head.addScaledVector(site, -head.dot(site)).normalize();
+        vulkan = { site, dir, t0: now, sim0: simMs };
+      }
+      if (!vulkan) return;
+      vulkanVis = reduced
+        ? (opening ? 1 : 0)
+        : Math.max(0, Math.min(1, vulkanVis + (opening ? dt / 0.6 : -dt / 0.25)));
+      if (vulkanVis <= 0.01) return;
+
+      // the head flies at orbital pace from lift-off; reduced motion holds it
+      // part way round
+      const reach = reduced ? 0.8 : (VULKAN_N * (simMs - vulkan.sim0)) / 1000;
+      const from = Math.max(0, reach - VULKAN_TRAIL);
+      const camPos = camera.position;
+      const N = Math.max(8, Math.ceil((reach - from) * 60));
+      let prev: { x: number; y: number } | null = null;
+      let newest: { x: number; y: number } | null = null; // furthest point along still in view
+      ctx.save();
+      ctx.lineWidth = 1.5;
+      ctx.lineCap = "round";
+      for (let q = 0; q <= N; q++) {
+        const p = vulkanAt(vulkan, from + (q / N) * (reach - from));
+        const s = !hiddenByEarth(camPos, p) ? toScreen(p) : null;
+        if (s && prev) {
+          ctx.strokeStyle = `rgba(${VULKAN_RGB},${(0.35 + 0.6 * (q / N)) * vulkanVis})`;
+          ctx.beginPath();
+          ctx.moveTo(prev.x, prev.y);
+          ctx.lineTo(s.x, s.y);
+          ctx.stroke();
+        }
+        if (s) newest = s;
+        prev = s;
+      }
+      // The head glows while it is on this side of the Earth. The name never
+      // leaves: behind the Earth it waits on the last of the track in view.
+      const headP = vulkanAt(vulkan, reach);
+      const headS = !hiddenByEarth(camPos, headP) ? toScreen(headP) : null;
+      const tip = headS ?? newest;
+      if (!tip) {
+        ctx.restore();
+        return;
+      }
+      // the head: two short calm blinks, then low, over and over
+      const beat = reduced ? 1 : ((now - vulkan.t0) / 1000) % VULKAN_BLINK_S;
+      const flash = (t: number) => Math.max(0, 1 - Math.abs(beat - t) / 0.12);
+      const lit = 0.3 + 0.7 * Math.max(flash(0.15), flash(0.55));
+      if (headS) {
+        const glow = ctx.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, 9 + 4 * lit);
+        glow.addColorStop(0, `rgba(255,255,255,${lit * vulkanVis})`);
+        glow.addColorStop(0.25, `rgba(${VULKAN_RGB},${(0.35 + 0.5 * lit) * vulkanVis})`);
+        glow.addColorStop(1, `rgba(${VULKAN_RGB},0)`);
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(tip.x, tip.y, 9 + 4 * lit, 0, TAU);
+        ctx.fill();
+      }
+
+      // the name, on a leader like the craft labels; the note under it on hover
+      const label = "VULCAN OS";
+      const note = "TO BE ANNOUNCED SOON";
+      ctx.font = `400 9.5px ${SANS}`;
+      ctx.letterSpacing = "0.2em";
+      const tw = ctx.measureText(label).width;
+      const nw = ctx.measureText(note).width;
+      const off = 11;
+      // the first clear corner, or the first corner if none is clear
+      const corners = [[1, -1], [-1, -1], [1, 1], [-1, 1]];
+      const boxAt = ([ex, ey]: number[]) => {
+        const lx = ex > 0 ? tip.x + ex * off : tip.x + ex * off - tw - 6;
+        return { x: lx - 2, y: tip.y + ey * off - 15, w: tw + 10, h: 18 };
+      };
+      const corner = corners.find((c) => !hits(boxAt(c))) ?? corners[0];
+      {
+        const [ex, ey] = corner;
+        const elbowX = tip.x + ex * off, elbowY = tip.y + ey * off;
+        const box = boxAt(corner);
+        taken.push(box);
+        // The camera leans after the pointer, so the name shifts a little as
+        // you reach for it: a generous target, and a beat of grace on leaving.
+        const over =
+          (hoverX >= box.x - 16 && hoverX <= box.x + box.w + 16 && hoverY >= box.y - 16 && hoverY <= box.y + box.h + 24) ||
+          Math.hypot(hoverX - tip.x, hoverY - tip.y) < 28;
+        if (over) vulkanHotUntil = now + 500;
+        const hot = now < vulkanHotUntil;
+        const end = ex > 0 ? elbowX + tw + 6 : elbowX - tw - 6;
+        ctx.strokeStyle = `rgba(${VULKAN_RGB},${(hot ? 1 : 0.7) * vulkanVis})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(tip.x + ex * 4, tip.y + ey * 4);
+        ctx.lineTo(elbowX, elbowY);
+        ctx.lineTo(end, elbowY);
+        ctx.stroke();
+        ctx.fillStyle = `rgba(${VULKAN_RGB},${vulkanVis})`;
+        ctx.fillText(label, ex > 0 ? elbowX + 3 : end + 3, elbowY - 4);
+        if (hot) {
+          ctx.fillStyle = `rgba(225,224,204,${0.8 * vulkanVis})`;
+          ctx.fillText(note, ex > 0 ? elbowX + 3 : end + tw + 6 - nw, elbowY + 14);
+        }
+      }
+      ctx.restore();
+    }
+
     /**
      * The overlay for one frame: the swarm of the last scene reached (it
      * spirals out once we leave), the mark on the target we are settled on,
@@ -1321,22 +1462,21 @@ export function OrbitTheatre({
         ctx.fillText(label, dx > 0 ? ex + 3 : end + 3, ey - 4);
       }
 
-      // clock and provenance, bottom right
+      drawVulkan(hits, taken);
+
+      // the clock, bottom right
       const d = new Date(simMs);
       const stamp = d.toISOString().replace("T", " ").slice(0, 19);
-      const lines = [
-        `UTC ${stamp} · ×${Math.round(opts.current.warp * (1 + energy * 3))}`,
-        "ELEMENTS · CELESTRAK GP · J2 PROPAGATED",
-      ];
       ctx.font = `400 9.5px ${SANS}`;
       ctx.letterSpacing = "0.16em";
       ctx.textBaseline = "alphabetic";
       ctx.textAlign = "right";
       ctx.fillStyle = "rgba(225,224,204,0.55)";
-      const x = width - (narrow() ? 16 : 28);
-      ctx.fillText(lines[0], x, height - (narrow() ? 30 : 42));
-      ctx.fillStyle = "rgba(225,224,204,0.35)";
-      ctx.fillText(lines[1], x, height - (narrow() ? 16 : 28));
+      ctx.fillText(
+        `UTC ${stamp} · ×${Math.round(opts.current.warp)}`,
+        width - (narrow() ? 16 : 28),
+        height - (narrow() ? 16 : 28),
+      );
       ctx.textAlign = "left";
       ctx.letterSpacing = "0px";
       ctx.globalAlpha = 1;
@@ -1737,8 +1877,7 @@ export function OrbitTheatre({
     function step(dt: number) {
       const O = opts.current;
       const D = O.drive?.current;
-      energy *= Math.pow(0.04, dt); // bleeds off in about a second
-      if (!reduced) simMs += dt * 1000 * O.warp * (1 + energy * 3);
+      if (!reduced) simMs += dt * 1000 * O.warp;
       // The two moves play at a steady pace toward where the page wants
       // them, and back, one after the other: the shield only starts once the
       // zoom is all the way in, and the zoom only backs out once the shield
