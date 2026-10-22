@@ -1,0 +1,42 @@
+{
+  "_readme": "Where the News section's items come from. Run `npm run news` (it also runs before every `npm run build`) to rebuild news.json. `links`: any article or post about Arqus, as a URL, or as { url, title, source, author, date, summary, image } to fill in or override what the page says. `queries`: searched each run on Google News, Bing News, Bing and DuckDuckGo. `mustMention`: a result counts as about us if its text contains one of these (or 'Arqus' together with 'Meersman'). `exclude`: URL fragments never to keep. `hide`: exact URLs never to show.",
+  "links": [
+    "https://www.groundstation.space/hackathons/laser-based-counter-drone-solution-wins-local-eudis-hackathon-round-at-unmanned-valley/",
+    "https://www.linkedin.com/posts/virajacharya_mashup-of-my-epic-conversation-with-marnix-ugcPost-7515398300926173184-pnr2/",
+    "https://www.linkedin.com/posts/marnixmeersman_looking-forward-to-speaking-tomorrow-at-cometlab-share-7475563290547396608-C4mq/",
+    "https://www.linkedin.com/feed/update/urn:li:activity:7472971510169845760",
+    {
+      "url": "https://heartbeat.cherry.vc/where/munich",
+      "title": "Heartbeat by Cherry Ventures: Munich",
+      "summary": "Cherry Ventures names Arqus among the most promising startups forming in Munich."
+    }
+  ],
+  "queries": [
+    "\"Arqus Aerospace\"",
+    "\"Arqus GmbH\"",
+    "arqusaerospace",
+    "\"Arqus\" \"Marnix Meersman\"",
+    "\"Arqus\" EUDIS hackathon"
+  ],
+  "mustMention": [
+    "arqus aerospace",
+    "arqusaerospace",
+    "arqus gmbh"
+  ],
+  "exclude": [
+    "arqusaerospace.com",
+    "arqus.space",
+    "linkedin.com/company/",
+    "linkedin.com/in/",
+    "crunchbase.com",
+    "pitchbook.com",
+    "companyhouse.de",
+    "registercheck.de",
+    "northdata.",
+    "firmenwissen.",
+    "unternehmensregister.",
+    "handelsregister.",
+    "online-handelsregister."
+  ],
+  "hide": []
+}

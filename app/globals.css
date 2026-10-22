@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Advercase (Indieground). Demo licence: personal, non-commercial use only,
+   so the files are git-ignored and never deployed. Without them every use of
+   --font-retro falls back to Instrument Serif. Buy the commercial licence
+   before this goes live. */
+@font-face { font-family: "Advercase"; src: url("/fonts/advercase/Advercase-Font-Demo-Regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Advercase"; src: url("/fonts/advercase/Advercase-Font-Demo-Italic.otf") format("opentype"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Advercase"; src: url("/fonts/advercase/Advercase-Font-Demo-Bold.otf") format("opentype"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Advercase"; src: url("/fonts/advercase/Advercase-Font-Demo-BoldItalic.otf") format("opentype"); font-weight: 700; font-style: italic; font-display: swap; }
+
 @layer base {
   :root {
     --background: 0 0% 0%;
@@ -35,6 +44,7 @@
 
   --font-display: var(--font-instrument-serif), 'Instrument Serif', 'Times New Roman', Georgia, serif;
   --font-sans: var(--font-inter), 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-retro: "Advercase", var(--font-instrument-serif), "Instrument Serif", Georgia, serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -75,16 +85,32 @@ html, body {
   object-fit: cover; object-position: 78% 30%;
   filter: brightness(0.85) saturate(0.9) contrast(1.05);
 }
-.arq-hero__noise {
-  position: absolute; inset: 0; pointer-events: none;
-  opacity: 0.55; mix-blend-mode: overlay;
-  background-image:
-    repeating-conic-gradient(from 0deg at 50% 50%,
-      rgba(255,255,255,0.02) 0deg 0.5deg,
-      rgba(0,0,0,0.02) 0.5deg 1deg),
-    radial-gradient(1px 1px at 15% 30%, rgba(255,255,255,0.4), transparent 50%),
-    radial-gradient(1px 1px at 80% 70%, rgba(255,255,255,0.3), transparent 50%),
-    radial-gradient(1px 1px at 45% 85%, rgba(255,255,255,0.25), transparent 50%);
+/* Film grain over the whole page: a tile of fractal noise, twice the size of
+   the frame, hopping to a new offset about ten times a second so it crawls
+   like grain on film rather than sitting still like a texture. Plain
+   blending rather than overlay, so it reads on black space as well as on the
+   bright Earth. */
+.arq-grain {
+  position: fixed; inset: -50%; z-index: 90; pointer-events: none;
+  opacity: 0.2;
+  /* noise, greyed, then its contrast pushed so the specks are crisp */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='2.2' intercept='-0.6'/><feFuncG type='linear' slope='2.2' intercept='-0.6'/><feFuncB type='linear' slope='2.2' intercept='-0.6'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  background-size: 220px 220px;
+  animation: arqGrain 0.9s steps(1, end) infinite;
+}
+@keyframes arqGrain {
+  0%    { transform: translate(0, 0); }
+  11%   { transform: translate(-4%, -7%); }
+  22%   { transform: translate(-11%, 3%); }
+  33%   { transform: translate(6%, -12%); }
+  44%   { transform: translate(-3%, 11%); }
+  55%   { transform: translate(-12%, -2%); }
+  66%   { transform: translate(9%, 6%); }
+  77%   { transform: translate(2%, -9%); }
+  88%   { transform: translate(-7%, 8%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arq-grain { animation: none; }
 }
 .arq-hero__scrim {
   position: absolute; inset: 0; pointer-events: none;
@@ -97,6 +123,8 @@ html, body {
 .arq-navpill {
   position: absolute; left: 50%; top: 0; z-index: 20; transform: translateX(-50%);
 }
+.arq-nav { position: fixed; z-index: 80; display: flex; gap: 2px; left: auto; right: clamp(16px, 2.6vw, 40px); transform: none; }
+.arq-nav .arq-navpill__link + .arq-navpill__link::before { display: none; }
 .arq-navpill__link {
   display: inline-flex; align-items: center; gap: 8px;
   background: #000; color: rgba(225,224,204,0.85);
@@ -152,6 +180,187 @@ html, body {
   translate: 0 0.08em;
 }
 .arq-hero__title-italic { font-style: italic; }
+
+/* The wordmark's place in the opening copy: an empty slot, sized like the
+   big logo (2003 × 696). The logo itself (.arq-docklogo) is fixed to the
+   screen and placed over it, then glides to the top left as the page scrolls
+   (components/docking-logo.tsx). */
+.arq-hero__logo {
+  position: relative; width: min(100%, 300px); aspect-ratio: 2003 / 696;
+  margin-bottom: 18px;
+}
+@media (min-width: 768px) { .arq-hero__logo { width: clamp(360px, 36vw, 620px); margin-bottom: 26px; } }
+.arq-docklogo {
+  position: fixed; left: 0; top: 0; z-index: 85; display: block;
+  transform-origin: 0 0; will-change: transform;
+  visibility: hidden; /* until it has been placed */
+  pointer-events: none;
+}
+.arq-docklogo[data-ready] { visibility: visible; }
+.arq-docklogo[data-docked="true"] { pointer-events: auto; }
+.arq-docklogo img { display: block; width: 100%; height: auto; }
+
+.arq-hero__slogan {
+  color: var(--bone);
+  font-family: var(--font-retro);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.005em;
+  margin: 0 0 28px;
+  font-size: clamp(32px, 8.5vw, 48px);
+  text-shadow: 0 2px 24px rgba(0,0,0,0.55);
+}
+@media (min-width: 768px) { .arq-hero__slogan { font-size: clamp(44px, 4.4vw, 80px); margin-bottom: 44px; } }
+
+/* The card naming the current target, dressed like 80s space-programme and
+   VHS-sleeve graphics: cut corners, a sunset stripe, scanlines, the name in
+   Advercase with a slight red/cyan misregistration, and the target's record.
+   The name and note are scrambled in from the scene; --accent is the
+   target's colour. data-hidden fades it out for the opening shot. */
+.arq-card {
+  --cut: 14px;
+  position: absolute; z-index: 2; top: 76px; right: 28px;
+  width: min(460px, calc(100% - 56px));
+  padding: 0 0 14px;
+  background:
+    repeating-linear-gradient(to bottom, rgba(255,255,255,0.035) 0 1px, transparent 1px 3px),
+    linear-gradient(160deg, rgba(30,14,8,0.55), rgba(6,8,12,0.55));
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+  box-shadow: inset 0 0 0 1px rgba(249,168,118,0.16);
+  font-family: var(--font-sans);
+  pointer-events: none;
+}
+.arq-card { transition: opacity 500ms var(--ease), transform 500ms var(--ease); }
+.arq-card[data-hidden] { opacity: 0; transform: translateY(-10px); }
+/* five bands, yellow through to crimson */
+.arq-card__stripes {
+  height: 14px; margin-bottom: 12px;
+  background: linear-gradient(to bottom,
+    #F5D04A 0 2px, transparent 2px 3px,
+    #F9A23B 3px 5px, transparent 5px 6px,
+    #F07427 6px 8px, transparent 8px 9px,
+    #D9461E 9px 11px, transparent 11px 12px,
+    #9A1F2B 12px 14px);
+}
+.arq-card__head {
+  display: flex; align-items: center; gap: 10px; padding: 0 20px;
+  font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(249,168,118,0.85);
+}
+.arq-card__head::before {
+  content: ""; width: 8px; height: 8px; background: var(--accent, var(--orange-500));
+  box-shadow: 0 0 8px var(--accent, var(--orange-500));
+  transition: background-color 600ms var(--ease), box-shadow 600ms var(--ease);
+}
+.arq-card__owner { margin-left: auto; color: rgba(225,224,204,0.55); }
+.arq-card__name {
+  margin-top: 8px; padding: 0 20px;
+  font-family: var(--font-retro); font-weight: 700; font-style: italic;
+  font-size: 30px; line-height: 1.02; letter-spacing: 0.01em; text-transform: uppercase;
+  color: #F3EBD8;
+  text-shadow: -1px 0 rgba(255,60,40,0.55), 1px 0 rgba(60,220,255,0.45), 0 0 18px rgba(240,116,39,0.35);
+  min-height: 1.05em; white-space: nowrap;
+}
+.arq-card__note {
+  margin-top: 6px; padding: 0 20px;
+  font-family: var(--font-retro); font-style: italic;
+  font-size: 15px; color: rgba(225,224,204,0.72);
+  min-height: 1.3em; white-space: nowrap;
+}
+
+/* What sits above the name: a launch photo, our 3D reconstruction, or a
+   plain "no imagery" frame. The card's data-media picks one. */
+.arq-card__media {
+  position: relative; margin: 12px 20px 0; height: 180px; overflow: hidden;
+  background: #07090c;
+  box-shadow: inset 0 0 0 1px rgba(225,224,204,0.1);
+}
+.arq-card__media::after {
+  /* scanlines and a soft vignette over whatever is showing */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0,0,0,0.28) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55));
+}
+.arq-card__photo, .arq-card__model, .arq-card__void { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+.arq-card__photo { object-fit: cover; filter: sepia(0.35) saturate(1.3) contrast(1.1) brightness(0.9); }
+.arq-card[data-media="photo"] .arq-card__photo,
+.arq-card[data-media="model"] .arq-card__model { display: block; }
+.arq-card[data-media="none"] .arq-card__void { display: flex; }
+.arq-card__void {
+  align-items: center; justify-content: center;
+  background:
+    linear-gradient(to top right, transparent calc(50% - 0.5px), rgba(225,224,204,0.12) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(to top left, transparent calc(50% - 0.5px), rgba(225,224,204,0.12) 50%, transparent calc(50% + 0.5px));
+}
+.arq-card__void span {
+  padding: 6px 12px; background: #07090c; border: 1px solid rgba(249,168,118,0.35);
+  font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(249,168,118,0.85);
+}
+.arq-card__caption {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 14px 10px 6px;
+  background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(225,224,204,0.6);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* the record: two columns of label over value */
+.arq-card__data {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 9px 16px;
+  margin: 14px 20px 0; padding-top: 12px;
+  border-top: 1px solid rgba(225,224,204,0.1);
+}
+.arq-card__data > div { min-width: 0; }
+.arq-card__wide { grid-column: 1 / -1; }
+.arq-card__data dt {
+  font-size: 8.5px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(249,168,118,0.7);
+}
+.arq-card__data dd {
+  margin: 3px 0 0; display: flex; align-items: center; gap: 10px;
+  font-size: 12.5px; color: rgba(225,224,204,0.88);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* five segments, lit up to the level in the target's threat */
+.arq-card__meter { display: inline-flex; gap: 3px; }
+.arq-card__meter i { width: 16px; height: 7px; background: rgba(225,224,204,0.12); transform: skewX(-18deg); }
+.arq-card__meter[data-level="1"] i:nth-child(-n+1),
+.arq-card__meter[data-level="2"] i:nth-child(-n+2),
+.arq-card__meter[data-level="3"] i:nth-child(-n+3),
+.arq-card__meter[data-level="4"] i:nth-child(-n+4),
+.arq-card__meter[data-level="5"] i:nth-child(-n+5) { background: var(--seg); box-shadow: 0 0 6px var(--seg); }
+.arq-card__meter i:nth-child(1) { --seg: #F5D04A; }
+.arq-card__meter i:nth-child(2) { --seg: #F9A23B; }
+.arq-card__meter i:nth-child(3) { --seg: #F07427; }
+.arq-card__meter i:nth-child(4) { --seg: #D9461E; }
+.arq-card__meter i:nth-child(5) { --seg: #E0213A; }
+@media (max-width: 767px) {
+  .arq-card { top: auto; bottom: 64px; right: 16px; left: 16px; width: auto; --cut: 10px; }
+  .arq-card__name { font-size: 22px; }
+  .arq-card__note { font-size: 13px; white-space: normal; }
+  /* a phone has room for the name and the threat, not the whole record */
+  .arq-card__media, .arq-card__data > div:not(.arq-card__wide), .arq-card__data > div:last-child { display: none; }
+}
+
+/* Darkens the corner the copy sits in, whatever the scene puts behind it. */
+.arq-hero__veil {
+  position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  background: radial-gradient(ellipse 62% 70% at 0% 100%, rgba(0,0,0,0.82), rgba(0,0,0,0.45) 45%, rgba(0,0,0,0) 75%);
+}
+@media (max-width: 767px) {
+  .arq-hero__veil {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.5) 30%, rgba(0,0,0,0) 48%);
+  }
+}
+
+/* On phones the art sits low, so the copy moves to the top. */
+@media (max-width: 767px) {
+  .arq-hero__copy { top: 0; bottom: auto; padding-top: 64px; }
+}
+
+/* room under the reveal mask for descenders */
+.arq-hero__slogan .arq-pull__mask { padding-bottom: 0.28em; margin-bottom: -0.2em; }
 @media (min-width: 640px) { .arq-hero__title { font-size: clamp(112px, 15vw, 280px); } }
 @media (min-width: 768px) { .arq-hero__title { font-size: clamp(140px, 15vw, 280px); } }
 @media (min-width: 1024px) { .arq-hero__title { font-size: clamp(168px, 14.5vw, 280px); } }
@@ -313,4 +522,263 @@ html, body {
   border-top: 1px solid rgba(225,224,204,0.12);
   font-size: 12px; color: rgba(225,224,204,0.45);
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+
+/* ============================================================
+   Backers — their logos drifting left to right, lower right of the
+   opening screen
+   ============================================================ */
+.arq-backers {
+  position: absolute; right: clamp(24px, 3.4vw, 52px); bottom: clamp(70px, 9vh, 96px);
+  width: min(780px, 48vw); pointer-events: auto;
+}
+.arq-backers__kicker {
+  display: block; margin-bottom: 10px; text-align: right;
+  font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(249,168,118,0.75);
+}
+.arq-backers__track {
+  overflow: hidden;
+  /* fade the logos out at both ends */
+  -webkit-mask: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  mask: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+}
+/* the lane holds the row twice and runs from -50% to 0: left to right */
+.arq-backers__lane { display: flex; width: max-content; animation: arqBackers 52s linear infinite; }
+.arq-backers__track:hover .arq-backers__lane { animation-play-state: paused; }
+.arq-backers__row { display: flex; align-items: center; gap: clamp(28px, 3vw, 48px); margin: 0; padding: 0 clamp(14px, 1.5vw, 24px); list-style: none; }
+.arq-backers__logo { flex: none; display: flex; align-items: center; height: 104px; }
+.arq-backers__logo a { display: block; }
+.arq-backers__logo a:focus-visible { outline: 1px solid var(--orange-300); outline-offset: 6px; }
+.arq-backers__logo img { display: block; width: auto; opacity: 0.62; transition: opacity 300ms var(--ease); }
+.arq-backers__logo:hover img, .arq-backers__logo a:focus-visible img { opacity: 1; }
+.arq-backers__logo[data-fx="invert"] img { filter: brightness(0) invert(1); }
+.arq-backers__logo[data-fx="none"] img { filter: grayscale(1) brightness(1.4); }
+@keyframes arqBackers { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@media (max-width: 767px) {
+  .arq-backers { left: 16px; right: 16px; width: auto; bottom: 64px; }
+  .arq-backers__kicker { text-align: left; }
+  .arq-backers__logo { height: 64px; }
+  .arq-backers__logo img { transform: scale(0.62); transform-origin: left center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arq-backers__lane { animation: none; }
+}
+
+/* ============================================================
+   The pinned stage and the panels that scroll over it
+   ============================================================ */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.arq-stagewrap { position: relative; }
+.arq-stage { position: sticky; top: 0; z-index: 0; }
+.arq-panel {
+  position: relative; z-index: 10; height: 100vh; pointer-events: none;
+  scroll-margin-top: 0;
+}
+.arq-stage + .arq-panel { margin-top: -100vh; }
+/* sit the copy where it sat inside the hero frame */
+@media (min-width: 768px) {
+  .arq-panel > .arq-hero__bottom { left: 12px; right: 12px; bottom: 12px; }
+}
+.arq-panel a, .arq-panel button { pointer-events: auto; }
+
+.arq-hero__statement {
+  max-width: 44ch; margin: -6px 0 22px;
+  font-size: 14px; line-height: 1.5; color: rgba(225,224,204,0.75);
+}
+@media (min-width: 768px) { .arq-hero__statement { font-size: 15px; margin: -20px 0 40px; } }
+.arq-hero__cue {
+  position: absolute; left: 50%; transform: translateX(-50%); bottom: 22px;
+  font-size: 9.5px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(225,224,204,0.5);
+}
+.arq-hero__cue::after {
+  content: ""; display: block; width: 1px; height: 36px; margin: 10px auto 0;
+  background: linear-gradient(to bottom, rgba(249,168,118,0.9), transparent);
+  animation: arqCue 1.8s var(--ease) infinite;
+}
+@keyframes arqCue { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+@media (max-width: 767px) { .arq-hero__cue { display: none; } }
+
+/* the threats panel: trend, story, and the arrows */
+.arq-threats .arq-hero__bottom { padding-bottom: clamp(24px, 4vw, 48px); }
+.arq-threats__kicker {
+  display: block; margin-bottom: 14px;
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(249,168,118,0.85);
+}
+.arq-threats__body { max-width: 34rem; animation: arqUp 0.6s var(--ease) both; }
+.arq-threats__title {
+  margin: 0; font-family: var(--font-retro); font-weight: 700; font-style: italic;
+  font-size: clamp(44px, 7vw, 104px); line-height: 0.92; color: #F3EBD8;
+  text-shadow: -2px 0 rgba(255,60,40,0.45), 2px 0 rgba(60,220,255,0.35), 0 2px 30px rgba(0,0,0,0.6);
+}
+.arq-threats__story {
+  margin: 16px 0 0; max-width: 46ch; font-size: 15px; line-height: 1.55; color: rgba(225,224,204,0.8);
+}
+.arq-threats__controls { display: flex; align-items: center; gap: 18px; margin-top: 28px; }
+.arq-threats__arrow {
+  width: 52px; height: 52px; display: grid; place-items: center; cursor: pointer;
+  background: rgba(8,10,14,0.4); color: var(--bone); font-size: 20px;
+  border: 1px solid rgba(249,168,118,0.4);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  transition: background-color 200ms var(--ease), color 200ms var(--ease);
+}
+.arq-threats__arrow:hover { background: var(--orange-500); color: #000; }
+.arq-threats__arrow:focus-visible { outline: 1px solid var(--orange-300); outline-offset: 3px; }
+.arq-threats__ticks { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.arq-threats__ticks button {
+  width: 22px; height: 6px; padding: 0; border: 0; cursor: pointer;
+  background: rgba(225,224,204,0.18); transform: skewX(-18deg);
+  transition: background-color 250ms var(--ease), width 250ms var(--ease);
+}
+.arq-threats__ticks button:hover { background: rgba(225,224,204,0.45); }
+.arq-threats__ticks button[aria-current="true"] { width: 40px; background: var(--tick); box-shadow: 0 0 8px var(--tick); }
+.arq-threats__note {
+  margin: 18px 0 0; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(225,224,204,0.35);
+}
+@media (max-width: 767px) {
+  .arq-threats__story { font-size: 14px; }
+  .arq-threats__ticks button { width: 14px; }
+  .arq-threats__ticks button[aria-current="true"] { width: 26px; }
+}
+
+/* ============================================================
+   Opportunities and News
+   ============================================================ */
+.arq-section {
+  position: relative; background: #000; color: var(--bone);
+  padding: clamp(72px, 10vw, 140px) clamp(20px, 3.4vw, 44px) clamp(40px, 6vw, 80px);
+  scroll-margin-top: 40px;
+}
+.arq-section + .arq-section { border-top: 1px solid rgba(225,224,204,0.08); }
+.arq-section__kicker {
+  display: block; margin-bottom: 14px;
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(249,168,118,0.8);
+}
+.arq-section__title {
+  margin: 0; font-family: var(--font-retro); font-weight: 400;
+  font-size: clamp(40px, 6vw, 88px); line-height: 0.95;
+}
+.arq-section__title em { font-style: italic; }
+.arq-section__lede { max-width: 52ch; margin: 22px 0 0; font-size: 15px; line-height: 1.6; color: rgba(225,224,204,0.72); }
+.arq-tiles {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;
+  margin: clamp(32px, 5vw, 56px) 0 0; padding: 0; list-style: none;
+}
+.arq-tile {
+  position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 200px;
+  padding: 24px 22px 20px;
+  background: linear-gradient(160deg, rgba(30,14,8,0.6), rgba(10,10,12,0.9));
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  box-shadow: inset 0 0 0 1px rgba(249,168,118,0.14);
+}
+.arq-tile::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px;
+  background: linear-gradient(to bottom, #F5D04A 0 1px, transparent 1px 2px, #F07427 2px 3px, transparent 3px 4px, #D9461E 4px 6px);
+  opacity: 0.85;
+}
+.arq-tile__meta { font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(249,168,118,0.75); }
+.arq-tile__title { font-family: var(--font-retro); font-style: italic; font-weight: 700; font-size: 26px; line-height: 1.05; color: #F3EBD8; }
+.arq-tile__foot { margin-top: auto; font-size: 12.5px; color: rgba(225,224,204,0.6); }
+.arq-tile__link {
+  position: absolute; right: 22px; bottom: 20px;
+  font-size: 12.5px; color: var(--orange-300); text-decoration: none;
+}
+.arq-tile__link:hover { color: var(--bone); }
+
+.arq-threats__kicker span { font-variant-numeric: tabular-nums; }
+
+/* the shield's rollout clock, top right: the month and year ticking, big,
+   and how many are up */
+.arq-shield__clock {
+  position: absolute; top: clamp(64px, 9vh, 96px); right: clamp(24px, 3.4vw, 52px);
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right;
+}
+.arq-shield__kicker {
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(249,168,118,0.85);
+}
+.arq-shield__date { display: flex; align-items: baseline; gap: 14px; }
+.arq-shield__month {
+  font-size: clamp(14px, 1.6vw, 22px); letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(225,224,204,0.75); font-variant-numeric: tabular-nums; min-width: 3.2em;
+}
+.arq-shield__year {
+  font-family: var(--font-retro); font-weight: 700; font-style: italic;
+  font-size: clamp(88px, 12vw, 200px); line-height: 0.9; color: var(--orange-300);
+  font-variant-numeric: tabular-nums;
+  text-shadow: -2px 0 rgba(255,60,40,0.4), 2px 0 rgba(60,220,255,0.3), 0 0 40px rgba(240,116,39,0.35);
+}
+.arq-shield__count {
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(225,224,204,0.7);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 767px) {
+  .arq-shield__clock { top: auto; bottom: 18px; right: 16px; }
+  .arq-shield__year { font-size: 56px; }
+}
+
+/* a news tile is one big link to the original */
+.arq-tile--link { padding: 0; }
+.arq-tile__cover {
+  display: flex; flex-direction: column; height: 100%;
+  color: inherit; text-decoration: none;
+  transition: background-color 250ms var(--ease);
+}
+.arq-tile__body { display: flex; flex-direction: column; gap: 10px; flex: 1; padding: 24px 22px 20px; }
+/* the article's own picture, graded to sit with the rest of the page */
+.arq-tile__image { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #07090c; }
+.arq-tile__image img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: sepia(0.3) saturate(1.2) contrast(1.08) brightness(0.88);
+  transition: transform 600ms var(--ease), filter 400ms var(--ease);
+}
+.arq-tile__image::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.22) 0 1px, transparent 1px 3px),
+    linear-gradient(to top, rgba(10,10,12,0.85), transparent 45%);
+}
+.arq-tile__cover:hover .arq-tile__image img { transform: scale(1.04); filter: sepia(0.15) saturate(1.25) contrast(1.08) brightness(1); }
+.arq-tile__cover:hover { background: rgba(240,116,39,0.08); }
+.arq-tile__cover:hover .arq-tile__foot { color: var(--orange-300); }
+.arq-tile__cover:focus-visible { outline: 1px solid var(--orange-300); outline-offset: -4px; }
+.arq-tile__summary {
+  font-size: 13px; line-height: 1.5; color: rgba(225,224,204,0.6);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* Headlines come in any language, and the Advercase demo has no accents or
+   umlauts, so news titles are set in Instrument Serif, which has them all. */
+.arq-tile--link .arq-tile__title { font-family: var(--font-display); font-weight: 400; font-style: normal; font-size: 25px; line-height: 1.1; }
+
+/* News: smaller cards drifting left to right across the section, edge to edge */
+.arq-news__track {
+  margin: clamp(32px, 5vw, 56px) calc(-1 * clamp(20px, 3.4vw, 44px)) 0;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+/* the lane holds the row twice and runs from -50% to 0: left to right */
+.arq-news__lane { display: flex; width: max-content; animation: arqNews 70s linear infinite; }
+.arq-news__track:hover .arq-news__lane, .arq-news__track:focus-within .arq-news__lane { animation-play-state: paused; }
+.arq-news__row { display: flex; gap: 14px; margin: 0; padding: 0 7px; list-style: none; }
+@keyframes arqNews { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+.arq-tile--small { flex: none; width: 270px; min-height: 0; }
+.arq-tile--small .arq-tile__body { gap: 7px; padding: 14px 16px 14px; }
+.arq-tile--small .arq-tile__meta { font-size: 8.5px; }
+.arq-tile--link.arq-tile--small .arq-tile__title { font-size: 18px; line-height: 1.12; }
+.arq-tile--small .arq-tile__summary { font-size: 12px; -webkit-line-clamp: 2; }
+.arq-tile--small .arq-tile__foot { font-size: 11.5px; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* no drift: the row sits still and can be scrolled sideways */
+  .arq-news__lane { animation: none; }
+  .arq-news__track { overflow-x: auto; -webkit-mask: none; mask: none; }
+  .arq-news__row[aria-hidden] { display: none; }
+}
+
+/* On a phone the menu tightens up, so it clears the docked logo on the left */
+@media (max-width: 767px) {
+  .arq-nav { right: 6px; }
+  .arq-nav .arq-navpill__link { padding: 8px 10px; font-size: 11.5px; gap: 6px; }
 }

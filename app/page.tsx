@@ -1,16 +1,18 @@
-"use client";
-
-import { useState } from "react";
 import Hero from "@/components/hero";
-import BriefingModal from "@/components/briefing-modal";
+import SiteNav from "@/components/site-nav";
+import { News, Opportunities } from "@/components/info-sections";
+import SiteFooter from "@/components/site-footer";
 
 export default function Home() {
-  const [modal, setModal] = useState(false);
-
   return (
     <main>
-      <Hero onBriefing={() => setModal(true)} />
-      {modal && <BriefingModal onClose={() => setModal(false)} />}
+      <SiteNav />
+      <Hero />
+      <Opportunities />
+      <News />
+      <SiteFooter />
+      {/* film grain over the whole page */}
+      <div className="arq-grain" aria-hidden="true" />
     </main>
   );
 }

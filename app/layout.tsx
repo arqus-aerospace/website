@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | Arqus Aerospace",
   },
   description:
-    "A European aerospace company. Based in Munich. Building the space arsenal.",
+    "Europe's guardian in orbit. Arqus Aerospace watches what moves in space, so Europe can act early and calmly. Based in Munich.",
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
   authors: [{ name: "Arqus Aerospace" }],
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     siteName: "Arqus Aerospace",
     title: "Arqus Aerospace",
     description:
-      "A European aerospace company. Based in Munich. Building the space arsenal.",
+      "Europe's guardian in orbit. Arqus Aerospace watches what moves in space, so Europe can act early and calmly. Based in Munich.",
     images: [
       {
         url: "/logo/icon.png",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Arqus Aerospace",
     description:
-      "A European aerospace company. Based in Munich. Building the space arsenal.",
+      "Europe's guardian in orbit. Arqus Aerospace watches what moves in space, so Europe can act early and calmly. Based in Munich.",
     images: ["/logo/icon.png"],
   },
   robots: {

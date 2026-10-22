@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Advercase is a personal-use demo licence: never commit or deploy it.
+# Local preview only; buy the commercial licence before going live.
+/public/fonts/advercase/
+/font/
