@@ -21,7 +21,7 @@ const BACKERS: Backer[] = [
   { name: "EXIST, Federal Ministry for Economic Affairs and Energy", src: "exist-bmwe.avif", fx: "invert", h: 96, href: "https://www.exist.de/" },
   { name: "UnternehmerTUM", src: "unternehmertum.avif", fx: "invert", h: 76, href: "https://www.unternehmertum.de/" },
   { name: "TUM Venture Labs Aerospace", src: "tum-venture-labs-aerospace.png", fx: "invert", h: 48, href: "https://www.tum-venture-labs.de/" },
-  { name: "Tholus Capital", src: "tholus.png", fx: "none", h: 24, href: "https://www.tholuscapital.com/" },
+  { name: "Tholus Capital", src: "tholus.png", fx: "none", h: 20, href: "https://www.tholuscapital.com/" },
   { name: "P3A", src: "p3a.png", fx: "invert", h: 40, href: "https://www.p3a.com/" },
   { name: "Atlantic", src: "atlantic.png", fx: "none", h: 46, href: "https://atlantic.vc/" },
   // TODO: link once we have Prototype's site
