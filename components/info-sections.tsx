@@ -26,6 +26,14 @@ const ROLES: Role[] = [
   { title: "GNC Engineer", team: "Spacecraft", place: "Munich · On-site", ...CALL },
   { title: "Flight Dynamics / Astrodynamics Engineer", team: "Space Domain Awareness", place: "Munich · On-site", ...CALL },
   { title: "Structural Engineer", team: "Spacecraft", place: "Munich · On-site", ...CALL },
+  { title: "Founder Associate (CEO Office)", team: "CEO Office", place: "Munich · On-site", ...CALL },
+  { title: "Founder Associate Technical / Ops", team: "Operations", place: "Munich · On-site", ...CALL },
+  { title: "Managing Director Netherlands Office", team: "Netherlands", place: "Netherlands · On-site", ...CALL },
+  { title: "Executive Assistant", team: "CEO Office", place: "Munich · On-site", ...CALL },
+  { title: "Internship / Working Student in GNC", team: "Spacecraft", place: "Munich · On-site", ...CALL },
+  { title: "Internship / Working Student in Spacecraft Structures", team: "Spacecraft", place: "Munich · On-site", ...CALL },
+  { title: "Internship / Working Student in Embedded Engineering", team: "Avionics", place: "Munich · On-site", ...CALL },
+  { title: "Unsolicited Full Time Application", team: "Any team", place: "Munich · On-site", ...CALL },
 ];
 
 /** "2 Sep 2026", or nothing if the source gave no date. */
