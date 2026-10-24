@@ -1,5 +1,5 @@
 // Opportunities and News: what follows the threats. The RF role is listed
-// with Atlantic's recruiting page; for the others, candidates call directly.
+// with Atlantic's recruiting page; the others apply through our own form.
 // The news is real, collected into lib/news/news.json by scripts/update-news.mjs
 // (`npm run news`, and before every build).
 
@@ -12,7 +12,11 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 /** Saved pictures are site paths; anything else is shown as given. */
 const imageSrc = (src: string) => (src.startsWith("/") ? BASE + src : src);
 
-const CALL: Pick<Role, "href" | "action"> = { href: "tel:+31612310062", action: "Call directly · +31 612310062" };
+const APPLY: Pick<Role, "href" | "action" | "external"> = {
+  href: "https://arqus-crm-swqv.swedencentral.cloudapp.azure.com/apply",
+  action: "Apply now →",
+  external: true,
+};
 
 const ROLES: Role[] = [
   {
@@ -23,17 +27,17 @@ const ROLES: Role[] = [
     action: "Apply →",
     external: true,
   },
-  { title: "GNC Engineer", team: "Spacecraft", place: "Munich · On-site", ...CALL },
-  { title: "Flight Dynamics / Astrodynamics Engineer", team: "Space Domain Awareness", place: "Munich · On-site", ...CALL },
-  { title: "Structural Engineer", team: "Spacecraft", place: "Munich · On-site", ...CALL },
-  { title: "Founder Associate (CEO Office)", team: "CEO Office", place: "Munich · On-site", ...CALL },
-  { title: "Founder Associate Technical / Ops", team: "Operations", place: "Munich · On-site", ...CALL },
-  { title: "Managing Director Netherlands Office", team: "Netherlands", place: "Netherlands · On-site", ...CALL },
-  { title: "Executive Assistant", team: "CEO Office", place: "Munich · On-site", ...CALL },
-  { title: "Internship / Working Student in GNC", team: "Spacecraft", place: "Munich · On-site", ...CALL },
-  { title: "Internship / Working Student in Spacecraft Structures", team: "Spacecraft", place: "Munich · On-site", ...CALL },
-  { title: "Internship / Working Student in Embedded Engineering", team: "Avionics", place: "Munich · On-site", ...CALL },
-  { title: "Unsolicited Full Time Application", team: "Any team", place: "Munich · On-site", ...CALL },
+  { title: "GNC Engineer", team: "Spacecraft", place: "Munich · On-site", ...APPLY },
+  { title: "Flight Dynamics / Astrodynamics Engineer", team: "Space Domain Awareness", place: "Munich · On-site", ...APPLY },
+  { title: "Structural Engineer", team: "Spacecraft", place: "Munich · On-site", ...APPLY },
+  { title: "Founder Associate (CEO Office)", team: "CEO Office", place: "Munich · On-site", ...APPLY },
+  { title: "Founder Associate Technical / Ops", team: "Operations", place: "Munich · On-site", ...APPLY },
+  { title: "Managing Director Netherlands Office", team: "Netherlands", place: "Netherlands · On-site", ...APPLY },
+  { title: "Executive Assistant", team: "CEO Office", place: "Munich · On-site", ...APPLY },
+  { title: "Internship / Working Student in GNC", team: "Spacecraft", place: "Munich · On-site", ...APPLY },
+  { title: "Internship / Working Student in Spacecraft Structures", team: "Spacecraft", place: "Munich · On-site", ...APPLY },
+  { title: "Internship / Working Student in Embedded Engineering", team: "Avionics", place: "Munich · On-site", ...APPLY },
+  { title: "Unsolicited Full Time Application", team: "Any team", place: "Munich · On-site", ...APPLY },
 ];
 
 /** "2 Sep 2026", or nothing if the source gave no date. */
