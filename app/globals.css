@@ -543,7 +543,7 @@ html, body {
   mask: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
 }
 /* the lane holds the row twice and runs from -50% to 0: left to right */
-.arq-backers__lane { display: flex; width: max-content; animation: arqBackers 52s linear infinite; }
+.arq-backers__lane { display: flex; width: max-content; animation: arqBackers 34s linear infinite; }
 .arq-backers__track:hover .arq-backers__lane { animation-play-state: paused; }
 .arq-backers__row { display: flex; align-items: center; gap: clamp(28px, 3vw, 48px); margin: 0; padding: 0 clamp(14px, 1.5vw, 24px); list-style: none; }
 .arq-backers__logo { flex: none; display: flex; align-items: center; height: 104px; }

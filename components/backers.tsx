@@ -1,9 +1,10 @@
 // The backers: a strip of their logos drifting slowly left to right in the
 // lower right corner of the opening screen, each linking to its site. All are
 // shown in white to match the page: dark marks are inverted, white ones left
-// as they are. (Atlantic, Prototype and Tholus came on dark boxes; those were cut
-// out into transparent white PNGs.) `h` evens out their visual weight, since
-// some sit in a lot of space.
+// as they are. (Atlantic, Prototype and Tholus came on dark boxes, and Bayern
+// Innovativ and NVIDIA in colour on white; those were cut out into transparent
+// white PNGs.) `h` evens out their visual weight, since some sit in a lot of
+// space.
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -19,6 +20,8 @@ type Backer = {
 const BACKERS: Backer[] = [
   { name: "ESA Business Incubation Centre Bavaria", src: "esa-bic.avif", fx: "invert", h: 84, href: "https://www.esa-bic.de/" },
   { name: "EXIST, Federal Ministry for Economic Affairs and Energy", src: "exist-bmwe.avif", fx: "invert", h: 96, href: "https://www.exist.de/" },
+  { name: "Bayern Innovativ", src: "bayern-innovativ.png", fx: "none", h: 54, href: "https://www.bayern-innovativ.de/" },
+  { name: "NVIDIA Inception Program", src: "nvidia-inception.png", fx: "none", h: 50, href: "https://www.nvidia.com/en-us/startups/" },
   { name: "UnternehmerTUM", src: "unternehmertum.avif", fx: "invert", h: 76, href: "https://www.unternehmertum.de/" },
   { name: "TUM Venture Labs Aerospace", src: "tum-venture-labs-aerospace.png", fx: "invert", h: 48, href: "https://www.tum-venture-labs.de/" },
   { name: "Tholus Capital", src: "tholus.png", fx: "none", h: 20, href: "https://www.tholuscapital.com/" },
