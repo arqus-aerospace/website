@@ -1,5 +1,5 @@
-// Opportunities and News: what follows the threats. The RF role is listed
-// with Atlantic's recruiting page; the others apply through our own form.
+// Opportunities and News: what follows the threats. The one open role, RF, is
+// listed with Atlantic's recruiting page; with none open the section says so.
 // The news is real, collected into lib/news/news.json by scripts/update-news.mjs
 // (`npm run news`, and before every build).
 
@@ -12,12 +12,8 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 /** Saved pictures are site paths; anything else is shown as given. */
 const imageSrc = (src: string) => (src.startsWith("/") ? BASE + src : src);
 
-const APPLY: Pick<Role, "href" | "action" | "external"> = {
-  href: "https://arqus-crm-swqv.swedencentral.cloudapp.azure.com/apply",
-  action: "Apply now →",
-  external: true,
-};
-
+// Only the RF role is open; add a Role here to open another
+// (our own form is https://arqus-crm-swqv.swedencentral.cloudapp.azure.com/apply).
 const ROLES: Role[] = [
   {
     title: "RF Engineer",
@@ -27,17 +23,6 @@ const ROLES: Role[] = [
     action: "Apply →",
     external: true,
   },
-  { title: "GNC Engineer", team: "Spacecraft", place: "Munich · On-site", ...APPLY },
-  { title: "Flight Dynamics / Astrodynamics Engineer", team: "Space Domain Awareness", place: "Munich · On-site", ...APPLY },
-  { title: "Structural Engineer", team: "Spacecraft", place: "Munich · On-site", ...APPLY },
-  { title: "Founder Associate (CEO Office)", team: "CEO Office", place: "Munich · On-site", ...APPLY },
-  { title: "Founder Associate Technical / Ops", team: "Operations", place: "Munich · On-site", ...APPLY },
-  { title: "Managing Director Netherlands Office", team: "Netherlands", place: "Netherlands · On-site", ...APPLY },
-  { title: "Executive Assistant", team: "CEO Office", place: "Munich · On-site", ...APPLY },
-  { title: "Internship / Working Student in GNC", team: "Spacecraft", place: "Munich · On-site", ...APPLY },
-  { title: "Internship / Working Student in Spacecraft Structures", team: "Spacecraft", place: "Munich · On-site", ...APPLY },
-  { title: "Internship / Working Student in Embedded Engineering", team: "Avionics", place: "Munich · On-site", ...APPLY },
-  { title: "Unsolicited Full Time Application", team: "Any team", place: "Munich · On-site", ...APPLY },
 ];
 
 /** "2 Sep 2026", or nothing if the source gave no date. */
@@ -59,11 +44,15 @@ export function Opportunities() {
   return (
     <section id="opportunities" className="arq-section" aria-labelledby="opportunities-title">
       <Head id="opportunities-title" kicker="Opportunities" title="Open" italic="roles." />
-      <ul className="arq-tiles">
-        {ROLES.map((r) => (
-          <RoleTile key={r.title} role={r} />
-        ))}
-      </ul>
+      {ROLES.length ? (
+        <ul className="arq-tiles">
+          {ROLES.map((r) => (
+            <RoleTile key={r.title} role={r} />
+          ))}
+        </ul>
+      ) : (
+        <p className="arq-section__lede">All positions are currently filled. New roles will appear here as they open.</p>
+      )}
     </section>
   );
 }
