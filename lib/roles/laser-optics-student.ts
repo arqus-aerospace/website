@@ -101,12 +101,6 @@ export const LASER_OPTICS_STUDENT: PostedRole = {
         },
         { term: "Compensation", value: "unpaid" },
         { term: "Citizenship", kind: "mark", value: "You must have NATO member state citizenship." },
-        {
-          term: "How to apply",
-          kind: "apply",
-          before: "send your CV, a short note on why this role interests you, and your latest transcript to ",
-          after: ". Project photos, code, or a portfolio are very welcome.",
-        },
         { term: "Application process", kind: "chip", value: "Steps to be added" },
       ],
     },

@@ -5,9 +5,13 @@
 
 import type { Role } from "@/components/role-tile";
 import type { OpenRole, PostedRole } from "./types";
+import { EMBEDDED_SYSTEMS_ENGINEER } from "./embedded-systems-engineer";
 import { LASER_OPTICS_STUDENT } from "./laser-optics-student";
+import { MECHANICAL_ENGINEER } from "./mechanical-engineer";
 
 export const OPEN_ROLES: OpenRole[] = [
+  EMBEDDED_SYSTEMS_ENGINEER,
+  MECHANICAL_ENGINEER,
   LASER_OPTICS_STUDENT,
   {
     title: "RF Engineer",
