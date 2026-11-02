@@ -28,7 +28,8 @@ export type JdScenarioSection = {
   heading: JdHeading;
   /** notched cards by default; a list when the lines should read as one run */
   style?: "tiles" | "list";
-  items: { meta: string; text: string }[];
+  /** the label is only shown on cards, so a listed section can go without */
+  items: { meta?: string; text: string }[];
   /** the line that closes the section, full width under it */
   note?: string;
 };
@@ -43,8 +44,6 @@ export type JdDetailRow =
   | { term: string; kind: "mark"; value: string }
   /** a format per block: its name in bone over what it means */
   | { term: string; kind: "formats"; formats: { name: string; detail: string }[] }
-  /** the sentence around the address; the form itself follows the list */
-  | { term: string; kind: "apply"; before: string; after: string }
   /** a dashed chip for what is not written yet */
   | { term: string; kind: "chip"; value: string };
 
