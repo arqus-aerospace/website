@@ -8,12 +8,12 @@ import type { OpenRole, PostedRole } from "./types";
 import { EMBEDDED_SYSTEMS_ENGINEER } from "./embedded-systems-engineer";
 import { LASER_OPTICS_STUDENT } from "./laser-optics-student";
 import { MECHANICAL_ENGINEER } from "./mechanical-engineer";
-import { THERMAL_ENGINEERING_STUDENT } from "./thermal-engineering-student";
+import { THERMAL_ENGINEER } from "./thermal-engineer";
 
 export const OPEN_ROLES: OpenRole[] = [
   EMBEDDED_SYSTEMS_ENGINEER,
   MECHANICAL_ENGINEER,
-  THERMAL_ENGINEERING_STUDENT,
+  THERMAL_ENGINEER,
   LASER_OPTICS_STUDENT,
   {
     title: "RF Engineer",
