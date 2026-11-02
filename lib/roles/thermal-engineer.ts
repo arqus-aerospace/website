@@ -1,13 +1,13 @@
-// Thermal Engineering Student. The only posting so far with no war stories of
+// Thermal Engineer. The only posting so far with no war stories of
 // its own, so it runs 01 to 05 rather than 01 to 06; the numbering follows
 // whatever sections are there.
 
 import type { PostedRole } from "./types";
 
-export const THERMAL_ENGINEERING_STUDENT: PostedRole = {
-  slug: "thermal-engineering-student",
-  title: "Thermal Engineering",
-  titleAccent: "Student",
+export const THERMAL_ENGINEER: PostedRole = {
+  slug: "thermal-engineer",
+  title: "Thermal",
+  titleAccent: "Engineer",
   team: "Thermal",
   place: "Munich · On-site",
   description: {
