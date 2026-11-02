@@ -8,10 +8,12 @@ import type { OpenRole, PostedRole } from "./types";
 import { EMBEDDED_SYSTEMS_ENGINEER } from "./embedded-systems-engineer";
 import { LASER_OPTICS_STUDENT } from "./laser-optics-student";
 import { MECHANICAL_ENGINEER } from "./mechanical-engineer";
+import { THERMAL_ENGINEERING_STUDENT } from "./thermal-engineering-student";
 
 export const OPEN_ROLES: OpenRole[] = [
   EMBEDDED_SYSTEMS_ENGINEER,
   MECHANICAL_ENGINEER,
+  THERMAL_ENGINEERING_STUDENT,
   LASER_OPTICS_STUDENT,
   {
     title: "RF Engineer",
@@ -38,6 +40,10 @@ export const roleTitle = (role: OpenRole): string =>
 export const roleTile = (role: OpenRole): Role => {
   const { team, place } = role;
   return isPosted(role)
-    ? { title: roleTitle(role), team, place, href: `/roles/${role.slug}`, action: "Read more →" }
+    ? {
+        title: roleTitle(role), team, place,
+        format: role.description.subtitle,
+        href: `/roles/${role.slug}`, action: "Read more →",
+      }
     : { title: role.title, team, place, href: role.applyUrl, action: "Apply →", external: true };
 };

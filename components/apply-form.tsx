@@ -6,9 +6,11 @@
 // file carrying that token. Once the answers are in they cannot be sent twice;
 // files that failed can be retried on their own.
 //
-// The CRM must allow this origin for any of it to work from the browser. Until
-// it does, the fetch is blocked before it leaves and the form says so, with the
-// address to write to instead.
+// The CRM has to allow the origin this page is served from, or the browser
+// blocks the request before it leaves and the form says so, offering the
+// address to write to instead. The site is served from the Pages CNAME, so
+// the origin to allow is https://arqusaerospace.com — not arqus.space, which
+// the imprint names and which is what the CRM allowed first by mistake.
 
 import { useRef, useState } from "react";
 
