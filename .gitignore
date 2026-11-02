@@ -39,3 +39,9 @@ next-env.d.ts
 # Local preview only; buy the commercial licence before going live.
 /public/fonts/advercase/
 /font/
+
+# Saved templates and scratch material: read locally, never shipped.
+/cache
+
+# JetBrains project files are personal, not the project's.
+/.idea

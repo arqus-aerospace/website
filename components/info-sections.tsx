@@ -1,29 +1,18 @@
-// Opportunities and News: what follows the threats. The one open role, RF, is
-// listed with Atlantic's recruiting page; with none open the section says so.
+// Opportunities and News: what follows the threats. The open roles come from
+// lib/roles/roles.ts, the one list behind both these tiles and the postings
+// under /roles; with none open the section says so.
 // The news is real, collected into lib/news/news.json by scripts/update-news.mjs
 // (`npm run news`, and before every build).
 
 import news from "@/lib/news/news.json";
-import RoleTile, { type Role } from "@/components/role-tile";
+import RoleTile from "@/components/role-tile";
+import { OPEN_ROLES, roleTile } from "@/lib/roles/roles";
 
 type NewsItem = { url: string; title: string; source: string; author?: string; date: string; summary: string; image: string };
 const NEWS = news.items as NewsItem[];
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 /** Saved pictures are site paths; anything else is shown as given. */
 const imageSrc = (src: string) => (src.startsWith("/") ? BASE + src : src);
-
-// Only the RF role is open; add a Role here to open another
-// (our own form is https://arqus-crm-swqv.swedencentral.cloudapp.azure.com/apply).
-const ROLES: Role[] = [
-  {
-    title: "RF Engineer",
-    team: "Space antenna",
-    place: "Munich · On-site",
-    href: "https://jobsatlanticvc.recruitee.com/o/rf-engineer-space-antenna-gn-defencetech-venture-munich",
-    action: "Apply →",
-    external: true,
-  },
-];
 
 /** "2 Sep 2026", or nothing if the source gave no date. */
 const shortDate = (iso: string) =>
@@ -44,11 +33,12 @@ export function Opportunities() {
   return (
     <section id="opportunities" className="arq-section" aria-labelledby="opportunities-title">
       <Head id="opportunities-title" kicker="Opportunities" title="Open" italic="roles." />
-      {ROLES.length ? (
+      {OPEN_ROLES.length ? (
         <ul className="arq-tiles">
-          {ROLES.map((r) => (
-            <RoleTile key={r.title} role={r} />
-          ))}
+          {OPEN_ROLES.map((role) => {
+            const tile = roleTile(role);
+            return <RoleTile key={tile.title} role={tile} />;
+          })}
         </ul>
       ) : (
         <p className="arq-section__lede">All positions are currently filled. New roles will appear here as they open.</p>
