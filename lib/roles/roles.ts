@@ -38,6 +38,10 @@ export const roleTitle = (role: OpenRole): string =>
 export const roleTile = (role: OpenRole): Role => {
   const { team, place } = role;
   return isPosted(role)
-    ? { title: roleTitle(role), team, place, href: `/roles/${role.slug}`, action: "Read more →" }
+    ? {
+        title: roleTitle(role), team, place,
+        format: role.description.subtitle,
+        href: `/roles/${role.slug}`, action: "Read more →",
+      }
     : { title: role.title, team, place, href: role.applyUrl, action: "Apply →", external: true };
 };
