@@ -4,6 +4,8 @@
 // The news is real, collected into lib/news/news.json by scripts/update-news.mjs
 // (`npm run news`, and before every build).
 
+import Link from "next/link";
+
 import news from "@/lib/news/news.json";
 import RoleTile from "@/components/role-tile";
 import { OPEN_ROLES, roleTile } from "@/lib/roles/roles";
@@ -43,6 +45,9 @@ export function Opportunities() {
       ) : (
         <p className="arq-section__lede">All positions are currently filled. New roles will appear here as they open.</p>
       )}
+      <p className="arq-section__aside">
+        None of these a fit? <Link href="/apply">Send an unsolicited application →</Link>
+      </p>
     </section>
   );
 }
