@@ -99,7 +99,6 @@ export const MECHANICAL_ENGINEER: PostedRole = {
         },
         { term: "Compensation", value: "unpaid" },
         { term: "Citizenship", kind: "mark", value: "You must have NATO member state citizenship." },
-        { term: "Application process", kind: "chip", value: "Steps to be added" },
       ],
     },
   },

@@ -22,12 +22,6 @@ function Definition({ row }: { row: JdDetailRow }) {
           ))}
         </dd>
       );
-    case "chip":
-      return (
-        <dd className="arq-jd__def">
-          <span className="arq-jd__chip">{row.value}</span>
-        </dd>
-      );
     default:
       return <dd className="arq-jd__def">{row.value}</dd>;
   }

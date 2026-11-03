@@ -1000,17 +1000,6 @@ html { scroll-behavior: smooth; }
 .arq-jd__mark { text-decoration-color: var(--orange-500); text-underline-offset: 4px; }
 .arq-jd__formats { display: flex; flex-direction: column; gap: 12px; color: rgba(225,224,204,0.78); }
 .arq-jd__formats strong { display: block; font-weight: 500; color: var(--bone); }
-.arq-jd__apply { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
-.arq-jd__email {
-  color: var(--orange-300); text-decoration: underline;
-  text-decoration-color: rgba(249,168,118,0.4); text-underline-offset: 3px;
-}
-.arq-jd__email:hover { color: var(--bone); }
-/* what is not written yet, said plainly */
-.arq-jd__chip {
-  display: inline-block; padding: 6px 12px; border: 1px dashed rgba(249,168,118,0.35);
-  font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(249,168,118,0.75);
-}
 
 /* ─── The application form, in our colours, on a posting's page ─────────── */
 .arq-apply {

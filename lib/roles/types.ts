@@ -43,9 +43,7 @@ export type JdDetailRow =
   /** underlined in orange: the one line nobody may skim past */
   | { term: string; kind: "mark"; value: string }
   /** a format per block: its name in bone over what it means */
-  | { term: string; kind: "formats"; formats: { name: string; detail: string }[] }
-  /** a dashed chip for what is not written yet */
-  | { term: string; kind: "chip"; value: string };
+  | { term: string; kind: "formats"; formats: { name: string; detail: string }[] };
 
 export type JobDescription = {
   /** over the title, e.g. "Opportunities · Vacancy" */
