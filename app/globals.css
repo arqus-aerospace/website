@@ -1076,7 +1076,3 @@ html { scroll-behavior: smooth; }
 .arq-apply__note { margin: 0; font-size: 15px; line-height: 1.6; color: rgba(225,224,204,0.72); }
 /* how a posting can be taken, under its title on the tile */
 .arq-tile__format { margin-top: -4px; font-size: 12px; line-height: 1.4; color: rgba(225,224,204,0.78); }
-/* the way in for people the postings do not cover */
-.arq-section__aside { margin: clamp(26px, 3vw, 38px) 0 0; font-size: 14px; color: rgba(225,224,204,0.6); }
-.arq-section__aside a { color: var(--orange-300); }
-.arq-section__aside a:hover { color: var(--bone); }
