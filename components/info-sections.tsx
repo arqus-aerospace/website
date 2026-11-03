@@ -1,14 +1,13 @@
 // Opportunities and News: what follows the threats. The open roles come from
 // lib/roles/roles.ts, the one list behind both these tiles and the postings
-// under /roles; with none open the section says so.
+// under /roles; with none open the section says so. The unsolicited tile
+// closes the row and is not one of them.
 // The news is real, collected into lib/news/news.json by scripts/update-news.mjs
 // (`npm run news`, and before every build).
 
-import Link from "next/link";
-
 import news from "@/lib/news/news.json";
 import RoleTile from "@/components/role-tile";
-import { OPEN_ROLES, roleTile } from "@/lib/roles/roles";
+import { OPEN_ROLES, UNSOLICITED_TILE, roleTile } from "@/lib/roles/roles";
 
 type NewsItem = { url: string; title: string; source: string; author?: string; date: string; summary: string; image: string };
 const NEWS = news.items as NewsItem[];
@@ -35,19 +34,16 @@ export function Opportunities() {
   return (
     <section id="opportunities" className="arq-section" aria-labelledby="opportunities-title">
       <Head id="opportunities-title" kicker="Opportunities" title="Open" italic="roles." />
-      {OPEN_ROLES.length ? (
-        <ul className="arq-tiles">
-          {OPEN_ROLES.map((role) => {
-            const tile = roleTile(role);
-            return <RoleTile key={tile.title} role={tile} />;
-          })}
-        </ul>
-      ) : (
+      {OPEN_ROLES.length ? null : (
         <p className="arq-section__lede">All positions are currently filled. New roles will appear here as they open.</p>
       )}
-      <p className="arq-section__aside">
-        None of these a fit? <Link href="/apply">Send an unsolicited application →</Link>
-      </p>
+      <ul className="arq-tiles">
+        {OPEN_ROLES.map((role) => {
+          const tile = roleTile(role);
+          return <RoleTile key={tile.title} role={tile} />;
+        })}
+        <RoleTile role={UNSOLICITED_TILE} />
+      </ul>
     </section>
   );
 }

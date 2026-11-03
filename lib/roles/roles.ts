@@ -47,3 +47,14 @@ export const roleTile = (role: OpenRole): Role => {
       }
     : { title: role.title, team, place, href: role.applyUrl, action: "Apply →", external: true };
 };
+
+/** The last tile, and not a role: a way in for whoever the postings miss.
+    It is kept out of OPEN_ROLES so nothing here claims to be a vacancy. */
+export const UNSOLICITED_TILE: Role = {
+  title: "Unsolicited Application",
+  team: "Any team",
+  place: "Munich · On-site",
+  format: "Whatever you are looking for",
+  href: "/apply",
+  action: "Apply →",
+};
