@@ -35,6 +35,17 @@ const AREAS = [
 
 type Attachment = { file: File; done: boolean; pct: number; error?: string };
 
+/** A url field wants a scheme, but "linkedin.com/in/me" is what people type.
+    Put https:// in front of anything that has no scheme of its own, so the
+    field is satisfied without the applicant having to work out why it was
+    not. Left alone when empty: the field is required, and that is the
+    browser's complaint to make, not ours. */
+const withScheme = (e: React.FocusEvent<HTMLInputElement>) => {
+  const value = e.target.value.trim();
+  if (!value) return;
+  e.target.value = /^[a-z][a-z0-9+.-]*:\/\//i.test(value) ? value : `https://${value}`;
+};
+
 const size = (bytes: number) =>
   bytes >= 1024 ** 3 ? `${(bytes / 1024 ** 3).toFixed(1)} GB` : `${Math.max(1, Math.round(bytes / 1024 ** 2))} MB`;
 
@@ -181,7 +192,14 @@ export default function ApplyForm({ area, email }: { area?: string; email: strin
         </label>
         <label className="arq-apply__field">
           <span>LinkedIn</span>
-          <input name="linkedin" type="url" maxLength={300} required placeholder="https://www.linkedin.com/in/your-name" />
+          <input
+            name="linkedin"
+            type="url"
+            maxLength={300}
+            required
+            placeholder="https://www.linkedin.com/in/your-name"
+            onBlur={withScheme}
+          />
         </label>
         <label className="arq-apply__field">
           <span>Nationality</span>
