@@ -27,7 +27,7 @@ export default function Apply() {
         <p className="arq-section__lede">
           We hire ahead of what we post. If the mission is yours but none of the{" "}
           <Link href="/roles">open roles</Link> is, write to us anyway. Tell us which part of the system pulls at
-          you — optics, structures, avionics, thermal, software, operations — and what you have already built and
+          you — optics, structures, avionics, thermal, software — and what you have already built and
           made work. Send your CV and anything that shows it: photos, code, drawings, a thesis. We read every
           application ourselves.
         </p>
