@@ -21,18 +21,6 @@ const MAX_FILES = 20;
 const MAX_FILE = 1024 ** 3;
 const MAX_TOTAL = 2 * 1024 ** 3;
 
-/** The disciplines the CRM sorts applications into. */
-const AREAS = [
-  "GNC and flight software",
-  "Avionics and electronics",
-  "Propulsion",
-  "Structures and mechanisms",
-  "Systems engineering",
-  "Manufacturing and test",
-  "Operations and business",
-  "Something else",
-];
-
 type Attachment = { file: File; done: boolean; pct: number; error?: string };
 
 /** A url field wants a scheme, but "linkedin.com/in/me" is what people type.
@@ -209,20 +197,11 @@ export default function ApplyForm({ area, email }: { area?: string; email: strin
           <span>Where you live</span>
           <input name="location" type="text" maxLength={120} required autoComplete="address-level2" />
         </label>
-        <label className="arq-apply__field">
-          <span>Area</span>
-          <select name="area" required defaultValue={area ?? ""}>
-            <option value="" disabled>
-              Choose one
-            </option>
-            {AREAS.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
-            ))}
-          </select>
-        </label>
       </div>
+
+      {/* The posting already says which discipline this is, so the CRM is told
+          without anyone being asked to pick it off a list. */}
+      <input type="hidden" name="area" value={area ?? ""} />
 
       <label className="arq-apply__field arq-apply__field--wide">
         <span>The most powerful thing you have built</span>
