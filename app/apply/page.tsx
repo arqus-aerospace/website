@@ -31,6 +31,11 @@ export default function Apply() {
           made work. Send your CV and anything that shows it: photos, code, drawings, a thesis. We read every
           application ourselves.
         </p>
+        {/* The postings spell this out in their details; an unsolicited
+            application has no details to read, so it is said here. */}
+        <p className="arq-section__require">
+          <u>You must have NATO member state citizenship.</u>
+        </p>
         <ApplyForm email="contact@arqusaerospace.com" area="Something else" />
       </section>
       <SiteFooter stealth />
